@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import "./App.css";
-import Level from "./Level";
-import Score from "./Score";
-import Screen from "./Screen";
-import Title from "./Title";
+import Level from "../src/Components/Level";
+import Score from "../src/Components/Score";
+import Screen from "../src/Components/Screen";
+import Title from "../src/Components/Title";
 
 function App() {
   return (
