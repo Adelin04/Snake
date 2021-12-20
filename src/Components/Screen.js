@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+"use strict";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import snakeRight from "../icon/snakeRight.png";
 import snakeLeft from "../icon/snakeLeft.png";
@@ -22,51 +23,65 @@ const Screen = () => {
   let down = false;
   let running = 0;
 
-  let interval = setInterval(Timer, 1000);
+  useEffect(
+    () => {
+      let interval = setInterval(Timer, 1000);
+      right = true;
+      if (pozSnakeX === pozAppleX && pozSnakeY === pozAppleY) {
+        newApple(setPozAppleX, setPozAppleY);
+        setCounterApple(counterApple + 1);
+      }
+      // console.log("add event listener");
+      keyboard.addEventListener("keydown", directionSnake, false);
 
-  useEffect(() => {
-    if (pozSnakeX === pozAppleX && pozSnakeY === pozAppleY) {
-      newApple(setPozAppleX, setPozAppleY);
-      setCounterApple(counterApple + 1);
-    }
-    // console.log("add event listener");
-    keyboard.addEventListener("keydown", directionSnake);
-
-    console.log("counterApple ", counterApple);
-    console.log("X" + pozSnakeX, " - ", "Y" + pozSnakeY);
-    console.log("pozAppleX" + pozAppleX, " - ", "pozAppleY" + pozAppleY);
-    return () => {
-      // console.log("remove event listener");
-      keyboard.removeEventListener("keydown", directionSnake);
-      //  clearInterval(interval);
-    };
-  }, [/* pozSnakeX, pozSnakeY */]);
+      console.log("counterApple ", counterApple);
+      console.log("pozAppleX" + pozAppleX, " - ", "pozAppleY" + pozAppleY);
+      return () => {
+        // console.log("remove event listener");
+        keyboard.removeEventListener("keydown", directionSnake);
+        //  clearInterval(interval);
+      };
+    },
+    [
+      /* pozSnakeX, pozSnakeY */
+    ]
+  );
 
   function Timer() {
     // running += 20;
     // console.log(running);
-    
+
     // setCounterApple(counterApple + 1);
-    
     // setPozSnakeX(running);
-    
-    // if (right) setPozSnakeX(pozSnakeX + sizeUnit);
-    // if (left) setPozSnakeX(pozSnakeX - sizeUnit);
-    // if (up) setPozSnakeY(pozSnakeY - sizeUnit);
-    // if (down) setPozSnakeY(pozSnakeY + sizeUnit);
+    if (right) {
+      setPozSnakeX(pozSnakeX + running);
+      setPozSnakeY(pozSnakeY);
+    }
+    if (left) {
+      setPozSnakeX(pozSnakeX - running);
+      setPozAppleY(pozSnakeY);
+    }
+    if (up) {
+      setPozSnakeY(pozSnakeY - running);
+      setPozSnakeX(pozSnakeX);
+    }
+    if (down) {
+      setPozSnakeY(pozSnakeY + sizeUnit);
+      setPozSnakeX(pozSnakeX);
+    }
+    console.log("X -> " + pozSnakeX, " - ", "Y -> " + pozSnakeY);
     // setPozSnakeX(pozSnakeX * 1 + sizeUnit);
     // setPozSnakeY(pozSnakeY * 1 + sizeUnit);
   }
-  
+
   const directionSnake = ({ key }) => {
-    
     switch (key) {
       case "ArrowDown":
         down = true;
         up = false;
         left = false;
         right = false;
-        //  setPozSnakeY(pozSnakeY + running);
+        // setPozSnakeY(pozSnakeY + sizeUnit);
         setSnakePositionHead(snakeDown);
         break;
       case "ArrowUp":
@@ -74,7 +89,7 @@ const Screen = () => {
         down = false;
         left = false;
         right = false;
-        // setPozSnakeY(pozSnakeY - running);
+        // setPozSnakeY(pozSnakeY - sizeUnit);
         setSnakePositionHead(snakeUp);
         break;
       case "ArrowRight":
@@ -82,7 +97,7 @@ const Screen = () => {
         up = false;
         down = false;
         left = false;
-        // setPozSnakeX(pozSnakeX + running);
+        // setPozSnakeX(pozSnakeX + sizeUnit);
         setSnakePositionHead(snakeRight);
         break;
       case "ArrowLeft":
@@ -90,12 +105,44 @@ const Screen = () => {
         right = false;
         up = false;
         down = false;
-        // setPozSnakeX(pozSnakeX - running);
+        // setPozSnakeX(pozSnakeX - sizeUnit);
         setSnakePositionHead(snakeLeft);
         break;
+      default:
+        console.log("Error");
     }
   };
 
+  /*     function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    // Remember the latest callback.
+
+    useEffect(
+      () => {
+        savedCallback.current = callback;
+      },
+      [callback]
+    );
+
+    // Set up the interval.
+
+    useEffect(
+      () => {
+        function tick() {
+          savedCallback.current();
+        }
+
+        if (delay !== null) {
+          let id = setInterval(tick, delay);
+
+          return () => clearInterval(id);
+        }
+      },
+      [delay]
+    );
+  }
+  useInterval(directionSnake, 1000); */
   const newApple = (setPozX, setPozY) => {
     setPozX((Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit);
     setPozY((Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit);
