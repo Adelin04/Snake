@@ -9,108 +9,119 @@ import apple from "../icon/apple.png";
 
 const keyboard = document.querySelector("body");
 
-const Screen = () => {
+const Screen = e => {
   const [sizeUnit, setSizeUnit] = useState(20);
   let [counterApple, setCounterApple] = useState(0);
-  const [pozAppleX, setPozAppleX] = useState(0);
-  const [pozAppleY, setPozAppleY] = useState(0);
-  const [pozSnakeX, setPozSnakeX] = useState(0);
-  const [pozSnakeY, setPozSnakeY] = useState(0);
+  let [pozAppleX, setPozAppleX] = useState(0);
+  let [pozAppleY, setPozAppleY] = useState(0);
+  let [pozSnakeX, setPozSnakeX] = useState(0);
+  let [pozSnakeY, setPozSnakeY] = useState(0);
+
   const [snakePozitionHead, setSnakePositionHead] = useState(snakeRight);
   let right = false;
   let left = false;
   let up = false;
   let down = false;
   let running = 0;
-
-  useEffect(
-    () => {
-      let interval = setInterval(Timer, 1000);
-      right = true;
-      if (pozSnakeX === pozAppleX && pozSnakeY === pozAppleY) {
-        newApple(setPozAppleX, setPozAppleY);
-        setCounterApple(counterApple + 1);
-      }
-      // console.log("add event listener");
-      keyboard.addEventListener("keydown", directionSnake, false);
-
-      console.log("counterApple ", counterApple);
-      console.log("pozAppleX" + pozAppleX, " - ", "pozAppleY" + pozAppleY);
-      return () => {
-        // console.log("remove event listener");
-        keyboard.removeEventListener("keydown", directionSnake);
-        //  clearInterval(interval);
-      };
-    },
-    [
-      /* pozSnakeX, pozSnakeY */
-    ]
-  );
-
-  function Timer() {
-    // running += 20;
-    // console.log(running);
-
-    // setCounterApple(counterApple + 1);
-    // setPozSnakeX(running);
-    if (right) {
-      setPozSnakeX(pozSnakeX + running);
-      setPozSnakeY(pozSnakeY);
+  let interval = null;
+  let changeDirection = false;
+  let pozSnake_X = 0;
+  let pozSnake_Y = 0;
+  
+  useEffect(() => {
+    if (pozSnakeX === pozAppleX && pozSnakeY === pozAppleY) {
+      newApple(setPozAppleX, setPozAppleY);
+      setCounterApple(counterApple + 1);
     }
+    // console.log("add event listener");
+    keyboard.addEventListener("keydown", directionSnake);
+    
+    console.log("counterApple ", counterApple);
+    return () => {
+      // console.log("remove event listener");
+      keyboard.removeEventListener("keydown", directionSnake);
+      clearInterval(interval);
+    };
+  }, []);
+  
+  // console.log("X -> " + pozSnakeX, " - ", "Y -> " + pozSnakeY);
+  
+  function Check() {
     if (left) {
-      setPozSnakeX(pozSnakeX - running);
-      setPozAppleY(pozSnakeY);
+      pozSnake_X -= sizeUnit;
+      setPozSnakeX(pozSnake_X);
+    }
+    if (right) {
+      pozSnake_X += sizeUnit;
+      setPozSnakeX(pozSnake_X);
     }
     if (up) {
-      setPozSnakeY(pozSnakeY - running);
-      setPozSnakeX(pozSnakeX);
+      pozSnake_Y -= sizeUnit;
+      setPozSnakeY(pozSnake_Y);
     }
     if (down) {
-      setPozSnakeY(pozSnakeY + sizeUnit);
-      setPozSnakeX(pozSnakeX);
+      pozSnake_Y += sizeUnit;
+      setPozSnakeY(pozSnake_Y);
     }
-    console.log("X -> " + pozSnakeX, " - ", "Y -> " + pozSnakeY);
-    // setPozSnakeX(pozSnakeX * 1 + sizeUnit);
-    // setPozSnakeY(pozSnakeY * 1 + sizeUnit);
+    console.log("pozSnakeX " + pozSnake_X, " - ", "pozSnakeY " + pozSnake_Y);
   }
 
   const directionSnake = ({ key }) => {
-    switch (key) {
-      case "ArrowDown":
-        down = true;
-        up = false;
-        left = false;
-        right = false;
-        // setPozSnakeY(pozSnakeY + sizeUnit);
-        setSnakePositionHead(snakeDown);
-        break;
-      case "ArrowUp":
-        up = true;
-        down = false;
-        left = false;
-        right = false;
-        // setPozSnakeY(pozSnakeY - sizeUnit);
-        setSnakePositionHead(snakeUp);
-        break;
-      case "ArrowRight":
-        right = true;
-        up = false;
-        down = false;
-        left = false;
-        // setPozSnakeX(pozSnakeX + sizeUnit);
-        setSnakePositionHead(snakeRight);
-        break;
-      case "ArrowLeft":
-        left = true;
-        right = false;
-        up = false;
-        down = false;
-        // setPozSnakeX(pozSnakeX - sizeUnit);
-        setSnakePositionHead(snakeLeft);
-        break;
-      default:
-        console.log("Error");
-    }
+    console.log(key);
+    interval = setInterval(() => {
+      running += 20;
+      console.log(running);
+      switch (key) {
+        case "ArrowDown":
+          down = true;
+          up = false;
+          left = false;
+          right = false;
+
+          // pozSnakeX += running;
+          // setPozSnakeY(pozSnakeY + running);
+
+          // setPozSnakeY(pozSnakeY + sizeUnit);
+          // setSnakePositionHead(snakeDown);
+          break;
+        case "ArrowUp":
+          up = true;
+          down = false;
+          left = false;
+          right = false;
+
+          // pozSnakeY -= running;
+          // setPozSnakeY(pozSnakeY - running);
+
+          // setPozSnakeY(pozSnakeY - sizeUnit);
+          // setSnakePositionHead(snakeUp);
+          break;
+        case "ArrowRight":
+          right = true;
+          up = false;
+          down = false;
+          left = false;
+          // pozSnakeX += running;
+          // setPozSnakeX(pozSnakeX + running);
+
+          // setPozSnakeX(pozSnakeX + sizeUnit);
+          // setSnakePositionHead(snakeRight);
+          break;
+        case "ArrowLeft":
+          left = true;
+          right = false;
+          up = false;
+          down = false;
+          // pozSnakeX -= running;
+          // setPozSnakeX(pozSnakeX - running);
+
+          // setSnakePositionHead(snakeLeft);
+          break;
+        default:
+          console.log("Error");
+      }
+      Check();
+    }, 1000);
   };
 
   /*     function useInterval(callback, delay) {
@@ -180,15 +191,18 @@ const Wrapper = styled.div`
   .snake-head {
     /* width: ${({ sizeUnit }) => sizeUnit}px;
     height: ${({ sizeUnit }) => sizeUnit}px; */
+
     left: ${({ pozSnakeX }) => pozSnakeX}px;
     top: ${({ pozSnakeY }) => pozSnakeY}px;
-    // background: green;
     transition: all 0.1s ease-out;
+
+    // background: green;
   }
 
   .apple {
     left: ${({ pozAppleX }) => pozAppleX}px;
     top: ${({ pozAppleY }) => pozAppleY}px;
+
     //background: green;
   }
 `;

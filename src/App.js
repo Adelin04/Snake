@@ -2,8 +2,9 @@ import styled from "styled-components";
 import "./App.css";
 import Level from "../src/Components/Level";
 import Score from "../src/Components/Score";
-import Screen from "../src/Components/Screen";
+// import Screen from "../src/Components/Screen";
 import Title from "../src/Components/Title";
+import Screen2 from "./Components/Screen2";
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
           <Title title={"Snake"} />
           <Score score={0} />
         </div>
-        <Screen />
+        <Screen2 />
+        {/* <Screen /> */}
       </div>
     </Wrapper>
   );
