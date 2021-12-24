@@ -7,7 +7,7 @@ import snakeUp from "../icon/snakeUp.png";
 import snakeDown from "../icon/snakeDown.png";
 import apple from "../icon/apple.png";
 import { Snake } from "./Snake";
-
+import { setPhoto } from "./UTILS";
 
 const Screen2 = () => {
   let WIDTH_SCREEN = 30;
@@ -16,136 +16,153 @@ const Screen2 = () => {
   let COLLUMNS = 30;
   let [counterApple, setCounterApple] = useState(0);
 
-  let [pozAppleX, setPozAppleX] = useState(0);
-  let [pozAppleY, setPozAppleY] = useState(0);
-  let [pozSnakeX, setPozSnakeX] = useState(2);
+  let img_snakeDown = setPhoto(snakeDown, WIDTH_SCREEN);
+  let img_snakeUp = setPhoto(snakeUp, WIDTH_SCREEN);
+  let img_snakeLeft = setPhoto(snakeLeft, WIDTH_SCREEN);
+  let img_snakeRight = setPhoto(snakeRight, WIDTH_SCREEN);
+  let img_apple = setPhoto(apple, WIDTH_SCREEN);
+
+  const [sizeUnit, setSizeUnit] = useState(20);
+  let [pozAppleX, setPozAppleX] = useState(
+    Math.floor(Math.random() * sizeUnit)
+  );
+  let [pozAppleY, setPozAppleY] = useState(
+    Math.floor(Math.random() * sizeUnit)
+  );
+  let [pozSnakeX, setPozSnakeX] = useState(0);
   let [pozSnakeY, setPozSnakeY] = useState(0);
-  const [snakePozitionHead, setSnakePositionHead] = useState(snakeRight);
-  let board = Array(ROWS).fill().map(row => new Array(COLLUMNS).fill(<div className="rows">0</div>));
+  const [snakePozitionHead, setSnakePositionHead] = useState(img_snakeDown);
   let right = false;
   let left = false;
   let up = false;
   let down = false;
 
   const keyboard = document.querySelector("body");
-/*   const uniqueKey = () => {
-    let index = 0;
-    for (let i = 0; i < WIDTH_SCREEN + 1; i++) {
-      index = i;
-    }
-    console.log(index);
-    return index;
-  }; */
 
-  board[0][1] = <img className="img" src={snakePozitionHead} key={()=>{WIDTH_SCREEN.map(e=>{return e})}} width="20px"/* {`${20}px`} */ height="20px" /* {`${20}px`} */  alt={'cell'}/>;
+  let board = Array(ROWS).fill().map((row, index) =>
+    new Array(COLLUMNS).fill(
+      <div key={index} className="rows">
+        0
+      </div>
+    )
+  );
 
-  useEffect(() => {
-    console.log("render");
+  board[pozSnakeX][pozSnakeY] = snakePozitionHead;
+  board[pozAppleX][pozAppleY] = img_apple;
+
+  let initialArray = Array.from(
+    { length: WIDTH_SCREEN },
+    (element, index, array) =>
+      Array.from(
+        { length: WIDTH_SCREEN },
+        (secDimElement, secDimIndex, secDimArray) => ({
+          x: index,
+          y: secDimIndex
+        })
+      )
+  );
+
+  // initialArray[pozSnakeX][pozSnakeY] = snakePozitionHead;
+
+  useEffect(
+    () => {
+      console.log(pozAppleX);
+      console.log(pozAppleY);
+      console.log("render");
+
+      // console.log("add event listener");
+      keyboard.addEventListener("keydown", directionSnake);
+
+      // console.log("counterApple ", counterApple);
+      // Check()
+      return () => {
+        // console.log("remove event listener");
+        keyboard.removeEventListener("keydown", directionSnake);
+        //clearInterval(interval);
+      };
+    },
+    [pozAppleY]
+  );
+
+  const newApple = (setPozX, setPozY) => {
+    setPozX((Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit);
+    setPozY((Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit);
+  };
+
+  /*   let interval = setInterval(() => {
     if (pozSnakeX === pozAppleX && pozSnakeY === pozAppleY) {
       newApple(setPozAppleX, setPozAppleY);
       setCounterApple(counterApple + 1);
     }
-    // console.log("add event listener");
-    keyboard.addEventListener("keydown", directionSnake);
-    
-    console.log("counterApple ", counterApple);
-    // Check()
-    return () => {
-      // console.log("remove event listener");
-      keyboard.removeEventListener("keydown", directionSnake);
-      //clearInterval(interval);
-    };
-  }, []);
-  
-    const newApple = (setPozX, setPozY) => {
-    setPozX((Math.floor(Math.random() * SIZE_UNIT - 1) + 1) * SIZE_UNIT);
-    setPozY((Math.floor(Math.random() * SIZE_UNIT - 1) + 1) * SIZE_UNIT);
-  };
+  }, 1000); */
 
-  function Check() {
+  function directionSnake({ key }) {
+    // interval = setInterval(() => {
+    console.log(key);
 
-    if(left) {
-      board[0][1] -= board[0][1 - 1];
+    switch (key) {
+      case "ArrowDown":
+        down = true;
+        up = false;
+        left = false;
+        right = false;
+        setPozSnakeX(pozSnakeX => pozSnakeX + 1);
+        // pozSnakeY += 1;
+        setSnakePositionHead(img_snakeDown);
+        console.log("pozSnakeY => ", pozSnakeY);
+        break;
+      case "ArrowUp":
+        up = true;
+        down = false;
+        left = false;
+        right = false;
+        setPozSnakeX(pozSnakeX => pozSnakeX - 1);
+        setSnakePositionHead(img_snakeUp);
+        // pozSnakeY -= 1;
+        break;
+      case "ArrowRight":
+        right = true;
+        up = false;
+        down = false;
+        left = false;
+        setPozSnakeY(pozSnakeY => pozSnakeY + 1);
+        setSnakePositionHead(img_snakeRight);
+        // pozSnakeX += 1;
+        break;
+      case "ArrowLeft":
+        left = true;
+        right = false;
+        up = false;
+        down = false;
+        setPozSnakeY(pozSnakeY => pozSnakeY - 1);
+        setSnakePositionHead(img_snakeLeft);
+        // pozSnakeX -= 1;
+        break;
+      default:
+        console.log("Error");
     }
-    if (right) {
-      board[0][1]+= SIZE_UNIT;
-    }
-/*     if (up) {
-      pozSnake_Y -= sizeUnit;
-      setPozSnakeY(pozSnake_Y);
-    }
-    if (down) {
-      pozSnake_Y += sizeUnit;
-      setPozSnakeY(pozSnake_Y);
-    } */
-    // console.log("pozSnakeX " + pozSnake_X, " - ", "pozSnakeY " + pozSnake_Y);
+    // }, 1000);
   }
 
-
-  const directionSnake = ({ key }) => {
-    console.log(key);
-    // interval = setInterval(() => {
-      
-      switch (key) {
-        case "ArrowDown":
-          down = true;
-          up = false;
-          left = false;
-          right = false;
-          // pozSnakeX += running;
-          // setPozSnakeY(pozSnakeY + running);
-
-          // setPozSnakeY(pozSnakeY + sizeUnit);
-          setSnakePositionHead(snakeDown);
-          break;
-        case "ArrowUp":
-          up = true;
-          down = false;
-          left = false;
-          right = false;
-
-          // pozSnakeY -= running;
-          // setPozSnakeY(pozSnakeY - running);
-
-          // setPozSnakeY(pozSnakeY - sizeUnit);
-          setSnakePositionHead(snakeUp);
-          break;
-        case "ArrowRight":
-          right = true;
-          up = false;
-          down = false;
-          left = false;
-          // pozSnakeX += running;
-          // setPozSnakeX(pozSnakeX + running);
-
-          // setPozSnakeX(pozSnakeX + sizeUnit);
-          setSnakePositionHead(snakeRight);
-          break;
-        case "ArrowLeft":
-          left = true;
-          right = false;
-          up = false;
-          down = false;
-          // pozSnakeX -= running;
-          // setPozSnakeX(pozSnakeX - running);
-          board[0][1] = board[0][1 - 1];
-          setSnakePositionHead(snakeLeft);
-          break;
-        default:
-          console.log("Error");
-      }
-    // }, 1000);
+  const getHTML = () => {
+   return initialArray.map((item, index) => {
+      // console.log(item);
+      return (
+        <div key={index} className="cells">
+          {item.map((x,y)=>(<span key={x,y} className="cell">{}</span>))}
+        </div>
+      );
+    });
   };
-
-
   return (
-    <Wrapper
-    SIZE_UNIT={SIZE_UNIT}
-    style={{ display: "flex" /* ,flexDirection:'column' */ }}
-    >
-        {board}
-        {console.log(board)}
-     
+    <Wrapper SIZE_UNIT={SIZE_UNIT} style={{ display: "flex" }}>
+      {console.log("pozSnakeX", pozSnakeX)}
+      {console.log("pozSnakeY", pozSnakeY)}
+      {/* {board && board} */}
+      {/* {console.log(board)} */}
+      {/* {initialArray && initialArray} */}
+      {console.log(initialArray)}
+      {getHTML()}
     </Wrapper>
   );
 };
@@ -159,15 +176,15 @@ const Wrapper = styled.div`
   height: 600px;
   flex-wrap: wrap;
 
-.test{
-  width:20px;
-  height:20px;
-}
+  .test {
+    width: 20px;
+    height: 20px;
+  }
 
   .cell {
     // position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: reverse-column;
     justify-content: center;
     align-items: center;
     width: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
@@ -185,13 +202,21 @@ const Wrapper = styled.div`
     height: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
     // background: red;
   }
-  
-  .img{
-    display:'flex';
-    flex-direction:column;
+
+  .img {
+    display: 'flex';
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background: solmon;
   }
-  `;
-  
+`;
+
+/*   const uniqueKey = () => {
+    let index = 0;
+    for (let i = 0; i < WIDTH_SCREEN + 1; i++) {
+      index = i;
+    }
+    console.log(index);
+    return index;
+  }; */

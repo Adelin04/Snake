@@ -27,25 +27,29 @@ const Screen = e => {
   let changeDirection = false;
   let pozSnake_X = 0;
   let pozSnake_Y = 0;
-  
-  useEffect(() => {
-    if (pozSnakeX === pozAppleX && pozSnakeY === pozAppleY) {
-      newApple(setPozAppleX, setPozAppleY);
-      setCounterApple(counterApple + 1);
-    }
-    // console.log("add event listener");
-    keyboard.addEventListener("keydown", directionSnake);
-    
-    console.log("counterApple ", counterApple);
-    return () => {
-      // console.log("remove event listener");
-      keyboard.removeEventListener("keydown", directionSnake);
-      clearInterval(interval);
-    };
-  }, []);
-  
+
+  useEffect(
+    () => {
+      console.log("render");
+      if (pozSnakeX === pozAppleX && pozSnakeY === pozAppleY) {
+        newApple(setPozAppleX, setPozAppleY);
+        setCounterApple(counterApple + 1);
+      }
+      // console.log("add event listener");
+      keyboard.addEventListener("keydown", directionSnake);
+
+      console.log("counterApple ", counterApple);
+      return () => {
+        // console.log("remove event listener");
+        keyboard.removeEventListener("keydown", directionSnake);
+        clearInterval(interval);
+      };
+    },
+    [snakePozitionHead]
+  );
+
   // console.log("X -> " + pozSnakeX, " - ", "Y -> " + pozSnakeY);
-  
+
   function Check() {
     if (left) {
       pozSnake_X -= sizeUnit;
@@ -82,7 +86,7 @@ const Screen = e => {
           // setPozSnakeY(pozSnakeY + running);
 
           // setPozSnakeY(pozSnakeY + sizeUnit);
-          // setSnakePositionHead(snakeDown);
+          setSnakePositionHead(snakeDown);
           break;
         case "ArrowUp":
           up = true;
@@ -94,7 +98,7 @@ const Screen = e => {
           // setPozSnakeY(pozSnakeY - running);
 
           // setPozSnakeY(pozSnakeY - sizeUnit);
-          // setSnakePositionHead(snakeUp);
+          setSnakePositionHead(snakeUp);
           break;
         case "ArrowRight":
           right = true;
@@ -105,7 +109,7 @@ const Screen = e => {
           // setPozSnakeX(pozSnakeX + running);
 
           // setPozSnakeX(pozSnakeX + sizeUnit);
-          // setSnakePositionHead(snakeRight);
+          setSnakePositionHead(snakeRight);
           break;
         case "ArrowLeft":
           left = true;
@@ -115,7 +119,7 @@ const Screen = e => {
           // pozSnakeX -= running;
           // setPozSnakeX(pozSnakeX - running);
 
-          // setSnakePositionHead(snakeLeft);
+          setSnakePositionHead(snakeLeft);
           break;
         default:
           console.log("Error");
