@@ -23,15 +23,14 @@ const Screen2 = () => {
   let img_apple = setPhoto(apple, WIDTH_SCREEN);
 
   const [sizeUnit, setSizeUnit] = useState(20);
-  let [pozAppleX, setPozAppleX] = useState(
-    Math.floor(Math.random() * sizeUnit)
-  );
-  let [pozAppleY, setPozAppleY] = useState(
-    Math.floor(Math.random() * sizeUnit)
-  );
-  let [pozSnakeX, setPozSnakeX] = useState(0);
-  let [pozSnakeY, setPozSnakeY] = useState(0);
-  const [snakePozitionHead, setSnakePositionHead] = useState(img_snakeDown);
+  let pozAppleX = 0;
+  let pozAppleY = 0;
+  // let pozAppleY, setPozAppleY] = useState(0);
+  /*  Math.floor(Math.random() * sizeUnit) */
+  /*Math.floor(Math.random() * sizeUnit) */
+  let [pozSnakeX, setPozSnakeX] = useState(10);
+  let [pozSnakeY, setPozSnakeY] = useState(10);
+  const [snakePozitionHead, setSnakePositionHead] = useState(img_snakeRight);
   let right = false;
   let left = false;
   let up = false;
@@ -39,40 +38,21 @@ const Screen2 = () => {
 
   const keyboard = document.querySelector("body");
 
-  let board = Array(ROWS).fill().map((row, index) =>
-    new Array(COLLUMNS).fill(
-      <div key={index} className="rows">
-        0
-      </div>
-    )
-  );
+  let board = Array(ROWS).fill().map(() => new Array(COLLUMNS).fill());
 
-  board[pozSnakeX][pozSnakeY] = snakePozitionHead;
-  board[pozAppleX][pozAppleY] = img_apple;
-
-  let initialArray = Array.from(
-    { length: WIDTH_SCREEN },
-    (element, index, array) =>
-      Array.from(
-        { length: WIDTH_SCREEN },
-        (secDimElement, secDimIndex, secDimArray) => ({
-          x: index,
-          y: secDimIndex
-        })
-      )
-  );
-
-  // initialArray[pozSnakeX][pozSnakeY] = snakePozitionHead;
-
+  // newApple(setPozAppleX,setPozAppleY)
   useEffect(
     () => {
-      console.log(pozAppleX);
-      console.log(pozAppleY);
+      board[pozAppleX][pozAppleY] = img_apple;
+
+      newApple();
+      console.log(pozAppleX, pozAppleY);
+      console.log("appleX", pozAppleX);
+      console.log("appleY", pozAppleY);
       console.log("render");
 
       // console.log("add event listener");
       keyboard.addEventListener("keydown", directionSnake);
-
       // console.log("counterApple ", counterApple);
       // Check()
       return () => {
@@ -81,12 +61,18 @@ const Screen2 = () => {
         //clearInterval(interval);
       };
     },
-    [pozAppleY]
+    [pozSnakeX, pozSnakeY]
   );
 
-  const newApple = (setPozX, setPozY) => {
-    setPozX((Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit);
-    setPozY((Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit);
+  const newApple = () => {
+    let appleX = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
+    let appleY = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
+    // let appleX =1;
+    // let appleY =2;
+    // setPozAppleX( appleX );
+    // setPozAppleY(appleY);
+    pozAppleX = appleX;
+    pozAppleY = appleY;
   };
 
   /*   let interval = setInterval(() => {
@@ -109,7 +95,6 @@ const Screen2 = () => {
         setPozSnakeX(pozSnakeX => pozSnakeX + 1);
         // pozSnakeY += 1;
         setSnakePositionHead(img_snakeDown);
-        console.log("pozSnakeY => ", pozSnakeY);
         break;
       case "ArrowUp":
         up = true;
@@ -144,25 +129,38 @@ const Screen2 = () => {
     // }, 1000);
   }
 
-  const getHTML = () => {
-   return initialArray.map((item, index) => {
-      // console.log(item);
-      return (
-        <div key={index} className="cells">
-          {item.map((x,y)=>(<span key={x,y} className="cell">{}</span>))}
-        </div>
-      );
-    });
+  let ReturnBoard_HTML = (pozSnakeX, pozSnakeY) => {
+    return (
+      <div className="board">
+        {board.map(row => {
+          return row.map((cell, i) => {
+            return (
+              <span key={i} className="row">
+                {'-'}
+              </span>
+            );
+          });
+        })}
+        {console.log("ReturnBoard_HTML ", pozSnakeX)}
+        {console.log("ReturnBoard_HTML ", pozSnakeY)}
+        {MoveSnake(pozSnakeX, pozSnakeY)}
+      </div>
+    );
   };
+
+  const MoveSnake = (pozSnakeX, pozSnakeY) => {
+    // return (board[pozSnakeX][pozSnakeY] = snakePozitionHead);
+    return (board[pozSnakeX][pozSnakeY] = snakePozitionHead);
+  };
+
   return (
     <Wrapper SIZE_UNIT={SIZE_UNIT} style={{ display: "flex" }}>
-      {console.log("pozSnakeX", pozSnakeX)}
-      {console.log("pozSnakeY", pozSnakeY)}
-      {/* {board && board} */}
-      {/* {console.log(board)} */}
+      {ReturnBoard_HTML(pozSnakeX, pozSnakeY)}
+      {console.log("RETURN")}
+
       {/* {initialArray && initialArray} */}
-      {console.log(initialArray)}
-      {getHTML()}
+      {/* {console.log(initialArray)} */}
+      {/* {getHTML()} */}
     </Wrapper>
   );
 };
@@ -171,7 +169,7 @@ export default Screen2;
 
 const Wrapper = styled.div`
   // display: block;
-  background: aqua;
+  background: grey;
   width: 600px;
   height: 600px;
   flex-wrap: wrap;
@@ -179,6 +177,16 @@ const Wrapper = styled.div`
   .test {
     width: 20px;
     height: 20px;
+  }
+
+  .board {
+    position:relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    background: salmon;
   }
 
   .cell {
@@ -189,7 +197,7 @@ const Wrapper = styled.div`
     align-items: center;
     width: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
     height: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
-    background: skyblue;
+    // background: skyblue;
   }
 
   .rows {
@@ -203,8 +211,18 @@ const Wrapper = styled.div`
     // background: red;
   }
 
+  .row {
+    // position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
+    height: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
+    // background: skyblue;
+  }
+
   .img {
-    display: 'flex';
+    // position: absolute;
+    display: block;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -220,3 +238,46 @@ const Wrapper = styled.div`
     console.log(index);
     return index;
   }; */
+
+//HTML =>
+/* {board &&
+        board.map(row => {
+          return row.map((cell, i) => {
+            return (
+              <span key={i} className="row">
+                0
+              </span>
+            );
+          });
+        })} */
+
+// board[pozAppleX][pozAppleY] = img_apple;
+
+/*   let initialArray = Array.from(
+      { length: WIDTH_SCREEN },
+    (element, index, array) =>
+    Array.from(
+      { length: WIDTH_SCREEN },
+      (secDimElement, secDimIndex, secDimArray) => ({
+        x: index,
+        y: secDimIndex
+      })
+      )
+      );
+      
+      const getHTML = () => {
+        return initialArray.map((item, index) => {
+          // console.log(item);
+          return (
+            <div key={index} className="cells">
+            {item.map((x, y) =>
+              <span key={(x, y)} className="cell">
+              {}
+              </span>
+              )}
+              </div>
+              );
+            });
+          };
+          */
+// initialArray[pozSnakeX][pozSnakeY] = snakePozitionHead;
