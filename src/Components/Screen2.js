@@ -30,7 +30,7 @@ const Screen2 = () => {
   /*Math.floor(Math.random() * sizeUnit) */
   let [pozSnakeX, setPozSnakeX] = useState(10);
   let [pozSnakeY, setPozSnakeY] = useState(10);
-  const [snakePozitionHead, setSnakePositionHead] = useState(img_snakeRight);
+  let [snakePozitionHead, setSnakePositionHead] = useState(img_snakeRight);
   let right = false;
   let left = false;
   let up = false;
@@ -133,10 +133,10 @@ const Screen2 = () => {
     return (
       <div className="board">
         {board.map(row => {
-          return row.map((cell, i) => {
+          return row.map(i => {
             return (
-              <span key={i} className="row">
-                {'-'}
+              <span key={i} className="cell">
+                {}
               </span>
             );
           });
@@ -150,7 +150,7 @@ const Screen2 = () => {
 
   const MoveSnake = (pozSnakeX, pozSnakeY) => {
     // return (board[pozSnakeX][pozSnakeY] = snakePozitionHead);
-    return (board[pozSnakeX][pozSnakeY] = snakePozitionHead);
+     return console.log(board);
   };
 
   return (
@@ -180,7 +180,7 @@ const Wrapper = styled.div`
   }
 
   .board {
-    position:relative;
+    position: relative;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -190,9 +190,9 @@ const Wrapper = styled.div`
   }
 
   .cell {
-    // position: relative;
-    display: flex;
-    flex-direction: reverse-column;
+    // position: absolute;
+    display: inline-bock;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
