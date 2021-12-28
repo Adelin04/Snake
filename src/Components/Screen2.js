@@ -38,31 +38,31 @@ const Screen2 = () => {
 
   const keyboard = document.querySelector("body");
 
-  let board = Array(ROWS).fill().map(() => new Array(COLLUMNS).fill());
+  let board = Array(ROWS)
+    .fill()
+    .map(() => new Array(COLLUMNS).fill(0));
+    // const board = [...new Array(COLLUMNS).keys()]
 
   // newApple(setPozAppleX,setPozAppleY)
-  useEffect(
-    () => {
-      board[pozAppleX][pozAppleY] = img_apple;
+  useEffect(() => {
+    board[pozAppleX][pozAppleY] = img_apple;
 
-      newApple();
-      console.log(pozAppleX, pozAppleY);
-      console.log("appleX", pozAppleX);
-      console.log("appleY", pozAppleY);
-      console.log("render");
+    newApple();
+    console.log(pozAppleX, pozAppleY);
+    console.log("appleX", pozAppleX);
+    console.log("appleY", pozAppleY);
+    console.log("render");
 
-      // console.log("add event listener");
-      keyboard.addEventListener("keydown", directionSnake);
-      // console.log("counterApple ", counterApple);
-      // Check()
-      return () => {
-        // console.log("remove event listener");
-        keyboard.removeEventListener("keydown", directionSnake);
-        //clearInterval(interval);
-      };
-    },
-    [pozSnakeX, pozSnakeY]
-  );
+    // console.log("add event listener");
+    keyboard.addEventListener("keydown", directionSnake);
+    // console.log("counterApple ", counterApple);
+    // Check()
+    return () => {
+      // console.log("remove event listener");
+      keyboard.removeEventListener("keydown", directionSnake);
+      //clearInterval(interval);
+    };
+  }, [pozSnakeX, pozSnakeY]);
 
   const newApple = () => {
     let appleX = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
@@ -92,7 +92,7 @@ const Screen2 = () => {
         up = false;
         left = false;
         right = false;
-        setPozSnakeX(pozSnakeX => pozSnakeX + 1);
+        setPozSnakeX((pozSnakeX) => pozSnakeX + 1);
         // pozSnakeY += 1;
         setSnakePositionHead(img_snakeDown);
         break;
@@ -101,7 +101,7 @@ const Screen2 = () => {
         down = false;
         left = false;
         right = false;
-        setPozSnakeX(pozSnakeX => pozSnakeX - 1);
+        setPozSnakeX((pozSnakeX) => pozSnakeX - 1);
         setSnakePositionHead(img_snakeUp);
         // pozSnakeY -= 1;
         break;
@@ -110,7 +110,7 @@ const Screen2 = () => {
         up = false;
         down = false;
         left = false;
-        setPozSnakeY(pozSnakeY => pozSnakeY + 1);
+        setPozSnakeY((pozSnakeY) => pozSnakeY + 1);
         setSnakePositionHead(img_snakeRight);
         // pozSnakeX += 1;
         break;
@@ -119,7 +119,7 @@ const Screen2 = () => {
         right = false;
         up = false;
         down = false;
-        setPozSnakeY(pozSnakeY => pozSnakeY - 1);
+        setPozSnakeY((pozSnakeY) => pozSnakeY - 1);
         setSnakePositionHead(img_snakeLeft);
         // pozSnakeX -= 1;
         break;
@@ -132,15 +132,15 @@ const Screen2 = () => {
   let ReturnBoard_HTML = (pozSnakeX, pozSnakeY) => {
     return (
       <div className="board">
-        {board.map(row => {
-          return row.map(i => {
-            return (
-              <span key={i} className="cell">
+        {board.map((y) => (
+          <div key={y}>
+            {board.map((x) => {
+              <div key={x} className="cell">
                 {}
-              </span>
-            );
-          });
-        })}
+              </div>;
+            })}
+          </div>
+        ))}
         {console.log("ReturnBoard_HTML ", pozSnakeX)}
         {console.log("ReturnBoard_HTML ", pozSnakeY)}
         {MoveSnake(pozSnakeX, pozSnakeY)}
@@ -149,8 +149,8 @@ const Screen2 = () => {
   };
 
   const MoveSnake = (pozSnakeX, pozSnakeY) => {
-    // return (board[pozSnakeX][pozSnakeY] = snakePozitionHead);
-     return console.log(board);
+    console.log(board);
+    return (board[pozSnakeX][pozSnakeY] = snakePozitionHead);
   };
 
   return (
