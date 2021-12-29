@@ -19,7 +19,15 @@ const Screen2 = () => {
   let img_snakeDown = setPhoto(snakeDown, WIDTH_SCREEN);
   let img_snakeUp = setPhoto(snakeUp, WIDTH_SCREEN);
   let img_snakeLeft = setPhoto(snakeLeft, WIDTH_SCREEN);
-  let img_snakeRight = setPhoto(snakeRight, WIDTH_SCREEN);
+  let img_snakeRight = (
+    <img
+      className="img"
+      src={snakeRight}
+      width="20px"
+      height="20px"
+      alt={"cell"}
+    />
+  ); //setPhoto(snakeRight, WIDTH_SCREEN);
   let img_apple = setPhoto(apple, WIDTH_SCREEN);
 
   const [sizeUnit, setSizeUnit] = useState(20);
@@ -28,9 +36,12 @@ const Screen2 = () => {
   // let pozAppleY, setPozAppleY] = useState(0);
   /*  Math.floor(Math.random() * sizeUnit) */
   /*Math.floor(Math.random() * sizeUnit) */
-  let [pozSnakeX, setPozSnakeX] = useState(10);
+  let [pozSnakeX, setPozSnakeX] = useState(1);
   let [pozSnakeY, setPozSnakeY] = useState(10);
   let [snakePozitionHead, setSnakePositionHead] = useState(img_snakeRight);
+  let [grid, setGrid] = useState([]);
+  let arr = [];
+
   let right = false;
   let left = false;
   let up = false;
@@ -38,14 +49,12 @@ const Screen2 = () => {
 
   const keyboard = document.querySelector("body");
 
-  let board = Array(ROWS)
-    .fill()
-    .map(() => new Array(COLLUMNS).fill(0));
-    // const board = [...new Array(COLLUMNS).keys()]
+  let board = Array(ROWS).fill().map(() => new Array(COLLUMNS).fill());
+  // const board = [...new Array(COLLUMNS).keys()]
 
   // newApple(setPozAppleX,setPozAppleY)
   useEffect(() => {
-    board[pozAppleX][pozAppleY] = img_apple;
+    makeGrid();
 
     newApple();
     console.log(pozAppleX, pozAppleY);
@@ -62,7 +71,7 @@ const Screen2 = () => {
       keyboard.removeEventListener("keydown", directionSnake);
       //clearInterval(interval);
     };
-  }, [pozSnakeX, pozSnakeY]);
+  }, []);
 
   const newApple = () => {
     let appleX = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
@@ -92,7 +101,7 @@ const Screen2 = () => {
         up = false;
         left = false;
         right = false;
-        setPozSnakeX((pozSnakeX) => pozSnakeX + 1);
+        setPozSnakeX(pozSnakeX => pozSnakeX + 1);
         // pozSnakeY += 1;
         setSnakePositionHead(img_snakeDown);
         break;
@@ -101,7 +110,7 @@ const Screen2 = () => {
         down = false;
         left = false;
         right = false;
-        setPozSnakeX((pozSnakeX) => pozSnakeX - 1);
+        setPozSnakeX(pozSnakeX => pozSnakeX - 1);
         setSnakePositionHead(img_snakeUp);
         // pozSnakeY -= 1;
         break;
@@ -110,7 +119,7 @@ const Screen2 = () => {
         up = false;
         down = false;
         left = false;
-        setPozSnakeY((pozSnakeY) => pozSnakeY + 1);
+        setPozSnakeY(pozSnakeY => pozSnakeY + 1);
         setSnakePositionHead(img_snakeRight);
         // pozSnakeX += 1;
         break;
@@ -119,7 +128,7 @@ const Screen2 = () => {
         right = false;
         up = false;
         down = false;
-        setPozSnakeY((pozSnakeY) => pozSnakeY - 1);
+        setPozSnakeY(pozSnakeY => pozSnakeY - 1);
         setSnakePositionHead(img_snakeLeft);
         // pozSnakeX -= 1;
         break;
@@ -132,15 +141,22 @@ const Screen2 = () => {
   let ReturnBoard_HTML = (pozSnakeX, pozSnakeY) => {
     return (
       <div className="board">
-        {board.map((y) => (
+        {/* {board.map(y =>
           <div key={y}>
-            {board.map((x) => {
-              <div key={x} className="cell">
-                {}
-              </div>;
-            })}
+            {board.map(x =>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+                key={x}
+                className="grid"
+              />
+            )}
           </div>
-        ))}
+        )} */}
+
         {console.log("ReturnBoard_HTML ", pozSnakeX)}
         {console.log("ReturnBoard_HTML ", pozSnakeY)}
         {MoveSnake(pozSnakeX, pozSnakeY)}
@@ -149,15 +165,70 @@ const Screen2 = () => {
   };
 
   const MoveSnake = (pozSnakeX, pozSnakeY) => {
+    board[pozSnakeX][pozSnakeY] = arr;
+    arr.push(
+      <div className="arr">
+        {snakePozitionHead}
+      </div>
+    );
     console.log(board);
-    return (board[pozSnakeX][pozSnakeY] = snakePozitionHead);
+    // console.log(arr);
   };
+
+  function testFunc() {
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board.length; j++) {
+        board[i][j] = arr;
+      }
+    }
+    return (
+      <div style={{ background: "green" }}>
+        {board}
+      </div>
+    );
+  }
+
+  function makeGrid() {
+    let TMP_GRID = [];
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        TMP_GRID.push({
+          row,
+          col
+        });
+      }
+    }
+    setGrid(TMP_GRID);
+  }
+
+  function returnGrid() {
+    const gridItem = grid.map(grid => {
+      return (
+        <div
+          key={grid.row.toString() + "-" + grid.col.toString()}
+          className="grid-item"
+        />
+      );
+    });
+
+    return (
+      <div className="board">
+        <div>
+          <div className="grid">
+            {gridItem}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Wrapper SIZE_UNIT={SIZE_UNIT} style={{ display: "flex" }}>
-      {ReturnBoard_HTML(pozSnakeX, pozSnakeY)}
+      {/* {ReturnBoard_HTML(pozSnakeX, pozSnakeY)} */}
+      {returnGrid()}
+      {console.log("grid", grid)}
       {console.log("RETURN")}
-
+      {/* {testFunc()} */}
       {/* {initialArray && initialArray} */}
       {/* {console.log(initialArray)} */}
       {/* {getHTML()} */}
@@ -168,33 +239,61 @@ const Screen2 = () => {
 export default Screen2;
 
 const Wrapper = styled.div`
-  // display: block;
+  // width: 100vw;
+  // height: 100vh;
+  width: 600px;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /*   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   background: grey;
   width: 600px;
   height: 600px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; */
 
-  .test {
+  .arr {
+    width: 20px;
+    height: 20px;
+    background: green;
+  }
+
+  .grid {
+    outline: 1px solid grey;
     width: 20px;
     height: 20px;
   }
 
   .board {
-    position: relative;
+    width: 600px;
+    height: 600px;
+    margin: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 100%;
-    height: 100%;
     background: salmon;
   }
-
-  .cell {
-    // position: absolute;
-    display: inline-bock;
-    flex-direction: column;
+  /*   .board {
+    position: relative;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    // background: salmon;
+  } */
+
+  .cell {
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
     width: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
     height: ${({ SIZE_UNIT }) => SIZE_UNIT}px;
     // background: skyblue;

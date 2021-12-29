@@ -5,6 +5,7 @@ import Score from "../src/Components/Score";
 import Screen from "../src/Components/Screen";
 import Title from "../src/Components/Title";
 import Screen2 from "./Components/Screen2";
+import Screen3 from "./Components/Screen3";
 
 function App() {
   return (
@@ -15,8 +16,9 @@ function App() {
           <Title title={"Snake"} />
           <Score score={0} />
         </div>
-        <Screen2 />
         {/* <Screen /> */}
+        {/* <Screen2 /> */}
+        {<Screen3 />}
       </div>
     </Wrapper>
   );
