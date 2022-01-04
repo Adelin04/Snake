@@ -1,0 +1,10 @@
+.grid-item {
+    outline: 1px solid grey;
+    width: 20px;
+    height: 20px;
+}
+
+.grid-item:hover {
+  background-color: skyblue;
+}
+

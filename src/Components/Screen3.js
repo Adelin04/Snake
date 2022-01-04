@@ -9,10 +9,12 @@ import apple from "../icon/apple.png";
 import { Snake } from "./Snake";
 import { setPhoto } from "./UTILS";
 
+import './Screen.css'
+
 const Screen2 = () => {
   let WIDTH_SCREEN = 30;
   let [SIZE_UNIT, set_SIZE_UNIT] = useState(20);
-  let ROWS = 30;
+  let ROWS = 20;
   let COLLUMNS = 30;
   let [counterApple, setCounterApple] = useState(0);
 
@@ -70,7 +72,7 @@ const Screen2 = () => {
   const newApple = () => {
     return {
       row: (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit,
-      col: (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit
+      col: (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit,
     };
   };
   /*   let interval = setInterval(() => {
@@ -129,11 +131,11 @@ const Screen2 = () => {
 
   function makeGrid() {
     let TMP_GRID = [];
-    for (let row = 0; row < ROWS; row++) {
-      for (let col = 0; col < COLLUMNS; col++) {
+    for (let row = 1; row < 20; row++) {
+      for (let col = 0; col < 20; col++) {
         TMP_GRID.push({
           row,
-          col
+          col,
         });
       }
     }
@@ -144,7 +146,7 @@ const Screen2 = () => {
   }
 
   function returnGrid() {
-    const gridItem = grid.map(grid => {
+    const gridItem = grid.map((grid) => {
       return (
         <div
           className="grid-item"
@@ -157,9 +159,7 @@ const Screen2 = () => {
 
     return (
       <div className="snake-container">
-        <div className="grid">
-          {gridItem}
-        </div>
+        <div className="grid">{gridItem}</div>
       </div>
     );
   }
@@ -174,10 +174,10 @@ const Screen2 = () => {
       row,
       col,
       isFood,
-      snakePozitionHead
+      snakePozitionHead,
     });
 
-    /* const gridItems = */ grid.map(grid => {
+    /* const gridItems = */ grid.map((grid) => {
       return (
         <div>
           <div
@@ -216,8 +216,8 @@ const Wrapper = styled.div`
   justify-content: center; */
 
   .snake-container {
-    width: 600px;
-    height: 600px;
+    width: 400px;
+    height: 400px;
     margin: auto;
     display: flex;
     flex-direction: row;
@@ -234,19 +234,20 @@ const Wrapper = styled.div`
   } */
 
   .grid {
-    width: 600px;
-    height: 600px;
+    width: 400px;
+    height: 400px;
     margin: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
   }
 
-  .grid-item {
+  /*   .grid-item {
     outline: 1px solid grey;
     width: 20px;
     height: 20px;
-  }
+  } */
+
 
   .is-food {
     background-color: red;

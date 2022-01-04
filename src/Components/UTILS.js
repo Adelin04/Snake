@@ -1,3 +1,5 @@
-export function setPhoto(src,key){
-   return <img className="img" src={src} key={()=>{key.map(e=>{return e})}} width="20px"/* {`${20}px`} */ height="20px" /* {`${20}px`} */  alt={'cell'}/>
-} 
+export function setPhoto(src) {
+  return (
+    <img className="img" src={src} width="20px" height="20px" alt={"cell"} />
+  );
+}
