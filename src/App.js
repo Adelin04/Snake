@@ -17,8 +17,8 @@ function App() {
           <Title title={"Snake"} />
           <Score score={0} />
         </div>
-        <_Snake />
-        {/* <Screen /> */}
+        {/* <_Snake /> */}
+        <Screen />
         {/* <Screen2 /> */}
         {/* {<Screen3 />} */}
       </div>
