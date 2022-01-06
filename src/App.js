@@ -7,6 +7,7 @@ import Title from "../src/Components/Title";
 import Screen2 from "./Components/Screen2";
 import Screen3 from "./Components/Screen3";
 import _Snake from "./Components/_Snake";
+import _Snake2 from "./Components/_Snake2";
 
 function App() {
   return (
@@ -18,9 +19,10 @@ function App() {
           <Score score={0} />
         </div>
         {/* <_Snake /> */}
-        <Screen />
+        {/* <Screen /> */}
         {/* <Screen2 /> */}
         {/* {<Screen3 />} */}
+        <_Snake2 />
       </div>
     </Wrapper>
   );
