@@ -8,21 +8,28 @@ import Screen2 from "./Components/Screen2";
 import Screen3 from "./Components/Screen3";
 import _Snake from "./Components/_Snake";
 import _Snake2 from "./Components/_Snake2";
+import { useRef, useState } from "react";
 
 function App() {
+  let [StartGame, setStartGame] = useState(false);
+  let [score, setScore] = useState(0);
+  // let StartGame = false;
   return (
     <Wrapper>
       <div className="App">
         <div className="navBar">
           <Level level={1} />
           <Title title={"Snake"} />
-          <Score score={0} />
+          <Score score={score} />
         </div>
         {/* <_Snake /> */}
         {/* <Screen /> */}
         {/* <Screen2 /> */}
         {/* {<Screen3 />} */}
-        <_Snake2 />
+
+        <button onClick={() => setStartGame(true)}>Start</button>
+
+        <_Snake2 StartGame={StartGame} />
       </div>
     </Wrapper>
   );
