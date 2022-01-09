@@ -190,8 +190,8 @@ export default Screen;
 
 const Wrapper = styled.div`
   position: relative;
-  width: 600px;
-  height: 600px;
+  width: 400px;
+  height: 400px;
   background: rgb(125, 165, 165);
 
   .snake {

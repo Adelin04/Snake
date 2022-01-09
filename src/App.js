@@ -16,21 +16,10 @@ function App() {
   // let StartGame = false;
   return (
     <Wrapper>
-      <div className="App">
-        <div className="navBar">
-          <Level level={1} />
-          <Title title={"Snake"} />
-          <Score score={score} />
-        </div>
-        {/* <_Snake /> */}
-        {/* <Screen /> */}
-        {/* <Screen2 /> */}
-        {/* {<Screen3 />} */}
-
-        <button onClick={() => setStartGame(true)}>Start</button>
-
-        <_Snake2 StartGame={StartGame} />
-      </div>
+      <_Snake2 StartGame={StartGame} />
+      <button className="btn_startGame" onClick={() => setStartGame(true)}>
+        Start
+      </button>
     </Wrapper>
   );
 }
@@ -42,16 +31,17 @@ const Wrapper = styled.section`
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  width: 100&;
   height: 100%;
 
-  .navBar {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    min-width: 400px;
-    height: auto;
-    // background: skyblue;
-    // border: solid 1px rgba(128, 128, 128, 0.466);;
-    // border-radius: 5px;
+  .btn_startGame {
+    width: 50px;
+    height: 50px;
   }
 `;
+
+{
+  /* <Level level={1} />
+<Title title={"Snake"} />
+<Score score={score} /> */
+}
