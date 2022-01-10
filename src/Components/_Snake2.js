@@ -19,17 +19,22 @@ class _Snake2 extends React.Component {
   interval = null;
   constructor(props) {
     super(props);
-    this.StartGame = this.props.StartGame;
-    console.log("thisScore", this.props.thisScore);
+    console.log("resolution", this.props.resolution);
+    console.log("StartGame", this.props.StartGame);
+    this.RECTANGULAR_SCREEN = this.props.resolution;
 
     this.state = {
-      RECTANGULAR_SCREEN: 600,
+      RECTANGULAR_SCREEN: this.RECTANGULAR_SCREEN,
       GAME_OVER: false,
       direction: "RIGHT",
       score: 0,
-      snake: [[0, 0], [20, 0], [40, 0]],
+      snake: [
+        [0, 0],
+        [20, 0],
+        [40, 0],
+      ],
       apple: this.newApple(),
-      counterApple: 0
+      counterApple: 0,
     };
 
     this.directionSnake = this.directionSnake.bind(this);
@@ -54,7 +59,11 @@ class _Snake2 extends React.Component {
 
   initialState() {
     this.setState({
-      snake: [[0, 0], [20, 0], [40, 0]]
+      snake: [
+        [0, 0],
+        [20, 0],
+        [40, 0],
+      ],
     });
   }
 
@@ -75,7 +84,10 @@ class _Snake2 extends React.Component {
       headSnake[1] === this.state.apple[1]
     ) {
       this.setState({
-        snake: [...this.state.snake, [this.state.apple[0], this.state.apple[1]]]
+        snake: [
+          ...this.state.snake,
+          [this.state.apple[0], this.state.apple[1]],
+        ],
       });
       this.setState({ apple: this.newApple() });
       this.setState({ counterApple: this.state.counterApple + 1 });
@@ -127,7 +139,7 @@ class _Snake2 extends React.Component {
     let headSnake = snakeCopy[snakeCopy.length - 1];
     snakeCopy.pop();
 
-    snakeCopy.forEach(element => {
+    snakeCopy.forEach((element) => {
       if (headSnake[0] === element[0] && headSnake[1] === element[1])
         // this.GAMEOVER();
         console.log("GAME OVER");
@@ -198,7 +210,7 @@ class _Snake2 extends React.Component {
             style={{
               position: "absolute",
               left: `${segment[0]}px`,
-              top: `${segment[1]}px`
+              top: `${segment[1]}px`,
             }}
             src={this.initialHead_img}
             alt="snake"
@@ -212,7 +224,7 @@ class _Snake2 extends React.Component {
             style={{
               position: "absolute",
               left: `${segment[0]}px`,
-              top: `${segment[1]}px`
+              top: `${segment[1]}px`,
             }}
             src={snakeTail}
             alt="snake"
@@ -228,7 +240,7 @@ class _Snake2 extends React.Component {
         style={{
           position: "absolute",
           left: `${this.state.apple[0]}px`,
-          top: `${this.state.apple[1]}px`
+          top: `${this.state.apple[1]}px`,
         }}
         width={sizeUnit}
         height={sizeUnit}
@@ -260,7 +272,8 @@ class _Snake2 extends React.Component {
           <Title title={"Snake"} />
           <Score score={this.state.score} />
         </div>
-        <Board RECTANGULAR_SCREEN={this.state.RECTANGULAR_SCREEN}>
+        <Board RECTANGULAR_SCREEN={this.props.resolution}>
+          {console.log("...", this.props.resolution)}
           {this.props.StartGame ? this.Start_Game() : null}
         </Board>
       </Wrapper>
@@ -273,9 +286,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
-  height: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
-  // border: 1px solid black;
+  // width: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
+  // height: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
+  // border: 1px solid salmon;
 
   .segment {
     width: 20px;
