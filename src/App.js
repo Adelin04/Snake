@@ -1,6 +1,5 @@
 import React from "react";
-import _Snake from "./Components/_Snake";
-import _Snake2 from "./Components/_Snake2";
+import Snake from "./Components/Snake";
 import { useState } from "react";
 
 //import Style
@@ -12,12 +11,9 @@ function App() {
   let [resolution, setResolution] = useState(400);
   let [toggleFocus, setToggleFocus] = useState(false);
 
-  const ChangeFocus = () => {
-    if (StartGame === true) setToggleFocus(true);
-  };
   return (
     <Wrapper resolution={resolution}>
-      <_Snake2 StartGame={StartGame} resolution={resolution} />
+      <Snake StartGame={StartGame} resolution={resolution} />
 
       <div className="footer">
         <button className="btn_startGame" onClick={() => setStartGame(true)}>
