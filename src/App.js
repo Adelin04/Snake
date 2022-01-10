@@ -12,14 +12,25 @@ import { useRef, useState } from "react";
 
 function App() {
   let [StartGame, setStartGame] = useState(false);
-  let [score, setScore] = useState(0);
+  let [Resolution, setResolution] = useState(600);
   // let StartGame = false;
   return (
-    <Wrapper>
+    <Wrapper Resolution={Resolution}>
       <_Snake2 StartGame={StartGame} />
-      <button className="btn_startGame" onClick={() => setStartGame(true)}>
-        Start
-      </button>
+
+      <div className="footer">
+        <button className="btn_startGame" onClick={() => setStartGame(true)}>
+          Start
+        </button>
+
+        <button
+          className="resolution"
+          value={400}
+          onClick={e => setResolution(e.target.value)}
+        >
+          Resolution
+        </button>
+      </div>
     </Wrapper>
   );
 }
@@ -31,8 +42,19 @@ const Wrapper = styled.section`
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  width: 100&;
+  width: 100%;
   height: 100%;
+
+  .footer {
+    display: flex;
+    justify-content: space-around;
+    margin: 25px auto;
+    width: ${({ Resolution }) => Resolution}px;
+    // background: skyblue;
+  }
+
+  .resolution {
+  }
 
   .btn_startGame {
     width: 50px;

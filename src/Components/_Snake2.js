@@ -23,7 +23,7 @@ class _Snake2 extends React.Component {
     console.log("thisScore", this.props.thisScore);
 
     this.state = {
-      RECTANGULAR_SCREEN: 400,
+      RECTANGULAR_SCREEN: 600,
       GAME_OVER: false,
       direction: "RIGHT",
       score: 0,
@@ -263,9 +263,6 @@ class _Snake2 extends React.Component {
         <Board RECTANGULAR_SCREEN={this.state.RECTANGULAR_SCREEN}>
           {this.props.StartGame ? this.Start_Game() : null}
         </Board>
-
-        {/* {this.props.StartGame ? this.returnSnake() : null}
-        {this.props.StartGame ? this.returnApple() : null} */}
       </Wrapper>
     );
   }
@@ -280,13 +277,6 @@ const Wrapper = styled.div`
   height: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
   // border: 1px solid black;
 
-  .snake {
-    // width: ${({ sizeUnit }) => sizeUnit}px;
-    // height: ${({ sizeUnit }) => sizeUnit}px;
-    // z-index: 1;
-    // background: green;
-  }
-
   .segment {
     width: 20px;
     height: 20px;
@@ -294,8 +284,6 @@ const Wrapper = styled.div`
   }
 
   .apple {
-    // left: ${({ pozAppleX }) => pozAppleX}px;
-    // top: ${({ pozAppleY }) => pozAppleY}px;
     z-index: 0;
     //background: green;
   }
@@ -306,9 +294,6 @@ const Wrapper = styled.div`
     align-items: center;
     min-width: 400px;
     height: auto;
-    // background: skyblue;
-    // border: solid 1px rgba(128, 128, 128, 0.466);
-    // border-radius: 5px;
   }
 `;
 
