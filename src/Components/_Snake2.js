@@ -27,20 +27,16 @@ class _Snake2 extends React.Component {
       GAME_OVER: false,
       direction: "RIGHT",
       score: 0,
-      snake: [
-        [0, 0],
-        [20, 0],
-        [40, 0],
-      ],
+      snake: [[0, 0], [20, 0], [40, 0]],
       apple: this.newApple(),
-      counterApple: 0,
+      counterApple: 0
     };
 
     this.directionSnake = this.directionSnake.bind(this);
   }
 
   componentDidMount() {
-    this.interval = setInterval(this.moveSnake, 300);
+    this.interval = setInterval(this.moveSnake, 100);
     keyboard.addEventListener("keydown", this.directionSnake);
   }
 
@@ -58,11 +54,7 @@ class _Snake2 extends React.Component {
 
   initialState() {
     this.setState({
-      snake: [
-        [0, 0],
-        [20, 0],
-        [40, 0],
-      ],
+      snake: [[0, 0], [20, 0], [40, 0]]
     });
   }
 
@@ -83,10 +75,7 @@ class _Snake2 extends React.Component {
       headSnake[1] === this.state.apple[1]
     ) {
       this.setState({
-        snake: [
-          ...this.state.snake,
-          [this.state.apple[0], this.state.apple[1]],
-        ],
+        snake: [...this.state.snake, [this.state.apple[0], this.state.apple[1]]]
       });
       this.setState({ apple: this.newApple() });
       this.setState({ counterApple: this.state.counterApple + 1 });
@@ -99,48 +88,36 @@ class _Snake2 extends React.Component {
     let { RECTANGULAR_SCREEN } = this.state;
     let snakeCopy = [...this.state.snake];
     let headSnake = snakeCopy[snakeCopy.length - 1];
-    let bodySnake = snakeCopy[snakeCopy.length - 2];
 
-    // headSnake = [0, headSnake[1]];
     if (headSnake[0] === RECTANGULAR_SCREEN) {
+      snakeCopy.pop();
       headSnake = [0, headSnake[1]];
-      console.log("headSnake", headSnake);
-      console.log("bodySnake", bodySnake);
-      console.log("snakeCopy", snakeCopy);
-      // bodySnake = [i, headSnake[1]];
-
       snakeCopy.push(headSnake);
-      snakeCopy.shift();
-/*       for (let i = snakeCopy.length; i > 0; i--) {
-        bodySnake = [i - 1, headSnake[1]];
-        snakeCopy.push(bodySnake);
-      } */
+      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
+
     if (headSnake[0] < 0) {
-      for (let i = snakeCopy.length; i > 0; i--) {
-        headSnake = [RECTANGULAR_SCREEN - sizeUnit, headSnake[1]];
-        snakeCopy.push(headSnake);
-        snakeCopy.shift();
-      }
+      snakeCopy.pop();
+      headSnake = [RECTANGULAR_SCREEN - sizeUnit, headSnake[1]];
+      snakeCopy.push(headSnake);
+      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
 
     if (headSnake[1] === RECTANGULAR_SCREEN) {
-      for (let i = snakeCopy.length; i > 0; i--) {
-        headSnake = [headSnake[0], 0];
-        snakeCopy.push(headSnake);
-        snakeCopy.shift();
-      }
+      snakeCopy.pop();
+      headSnake = [headSnake[0], 0];
+      snakeCopy.push(headSnake);
+      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
 
     if (headSnake[1] < 0) {
-      for (let i = snakeCopy.length; i > 0; i--) {
-        headSnake = [headSnake[0], RECTANGULAR_SCREEN - sizeUnit];
-        snakeCopy.push(headSnake);
-        snakeCopy.shift();
-      }
+      snakeCopy.pop();
+      headSnake = [headSnake[0], RECTANGULAR_SCREEN - sizeUnit];
+      snakeCopy.push(headSnake);
+      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
   }
@@ -150,7 +127,7 @@ class _Snake2 extends React.Component {
     let headSnake = snakeCopy[snakeCopy.length - 1];
     snakeCopy.pop();
 
-    snakeCopy.forEach((element) => {
+    snakeCopy.forEach(element => {
       if (headSnake[0] === element[0] && headSnake[1] === element[1])
         // this.GAMEOVER();
         console.log("GAME OVER");
@@ -221,7 +198,7 @@ class _Snake2 extends React.Component {
             style={{
               position: "absolute",
               left: `${segment[0]}px`,
-              top: `${segment[1]}px`,
+              top: `${segment[1]}px`
             }}
             src={this.initialHead_img}
             alt="snake"
@@ -235,7 +212,7 @@ class _Snake2 extends React.Component {
             style={{
               position: "absolute",
               left: `${segment[0]}px`,
-              top: `${segment[1]}px`,
+              top: `${segment[1]}px`
             }}
             src={snakeTail}
             alt="snake"
@@ -251,7 +228,7 @@ class _Snake2 extends React.Component {
         style={{
           position: "absolute",
           left: `${this.state.apple[0]}px`,
-          top: `${this.state.apple[1]}px`,
+          top: `${this.state.apple[1]}px`
         }}
         width={sizeUnit}
         height={sizeUnit}
@@ -269,8 +246,6 @@ class _Snake2 extends React.Component {
       </div>
     );
   };
-
-
 
   render() {
     return (
@@ -346,7 +321,8 @@ const Board = styled.div`
   width: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
   height: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
   box-shadow: 20px 0px 50px 2px rgba(0, 0, 0, 0.363);
-  background: salmon;
+  background: black;
+  // background: salmon;
 `;
 
 //*************************************************************************************//
