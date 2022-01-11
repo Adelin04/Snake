@@ -15,7 +15,7 @@ function App() {
     <Wrapper resolution={resolution}>
       <Snake StartGame={StartGame} resolution={resolution} />
 
-      <div className="footer">
+     {/*  <div className="footer">
         <button className="btn_startGame" onClick={() => setStartGame(true)}>
           Start Game
         </button>
@@ -38,7 +38,7 @@ function App() {
             <option value={800}>800 x 800</option>
           </select>
         </div>
-      </div>
+      </div> */}
     </Wrapper>
   );
 }

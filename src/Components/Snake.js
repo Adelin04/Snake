@@ -25,7 +25,8 @@ class _Snake2 extends React.Component {
 
     this.state = {
       RECTANGULAR_SCREEN: 400,
-      res: 400,
+      btn_StartGame: null,
+      btn_StopGame: false,
       interval: null,
       GAME_OVER: false,
       direction: "RIGHT",
@@ -39,10 +40,11 @@ class _Snake2 extends React.Component {
   }
 
   componentDidMount() {
+    // this.setState({ interval: setInterval(this.moveSnake, 100) });
     /*     console.log(this.context);
     console.log(this.state.RECTANGULAR_SCREEN); */
     this.RECTANGULAR_SCREEN = this.context.resolution;
-    this.state.interval = setInterval(this.moveSnake, 100);
+
     keyboard.addEventListener("keydown", this.directionSnake);
   }
 
@@ -265,8 +267,50 @@ class _Snake2 extends React.Component {
           <Score score={this.state.score} />
         </div>
         <Board RECTANGULAR_SCREEN={this.context.resolution}>
-          {this.props.StartGame ? this.Start_Game() : null}
+          {this.state.btn_StartGame ? this.Start_Game() : null}
         </Board>
+
+        <div className="footer">
+          <button
+            disabled={this.state.btn_StopGame}
+            onClick={() => {
+              this.setState({ btn_StartGame: true });
+              // this.setState({ btn_StopGame: false });
+              this.setState({ interval: setInterval(this.moveSnake, 100) });
+            }}
+          >
+            START
+          </button>
+
+          <button
+            disabled={!this.state.btn_StartGame}
+            onClick={() => {
+              this.setState({ btn_StopGame: true });
+              // this.setState({ btn_StartGame: false });
+              this.setState({
+                interval: clearInterval(this.state.interval)
+              });
+            }}
+          >
+            STOP
+          </button>
+
+          <div className="wrapper-resolution">
+            <span>Resolution</span>
+            <select
+              // disabled={!this.state.btn_StartGame}
+              name="resolution"
+              className="resolution"
+              onChange={e => {
+                this.setState({ RECTANGULAR_SCREEN: e.target.value });
+              }}
+            >
+              <option value={400}>400 x 400</option>
+              <option value={600}>600 x 600</option>
+              <option value={800}>800 x 800</option>
+            </select>
+          </div>
+        </div>
       </Wrapper>
     );
   }
@@ -294,6 +338,48 @@ const Wrapper = styled.div`
     align-items: center;
     min-width: 400px;
     height: auto;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-around;
+    margin: 25px auto;
+    width: ${({ resolution }) => resolution}px;
+    // background: skyblue;
+  }
+
+  .wrapper-resolution {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    // background: salmon;
+
+    span {
+      font-size: 20px;
+    }
+  }
+
+  .resolution {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 20px;
+    border-radius: 5px;
+    // outline: none;
+    // background: salmon;
+  }
+
+  .btn_startGame,
+  .btn_stopGame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    width: auto;
+    height: 50px;
   }
 `;
 
