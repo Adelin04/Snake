@@ -270,7 +270,6 @@ class _Snake2 extends React.Component {
 
   GAMEOVER = () => {
     this.state.GAME_OVER = true;
-
     return <div className="game-over">Game Over</div>;
   };
 
