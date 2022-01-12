@@ -21,7 +21,6 @@ class _Snake2 extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("StartGame", this.props.StartGame);
 
     this.initialHead_img = snakeRight;
     this.state = {
@@ -43,9 +42,6 @@ class _Snake2 extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.state.RECTANGULAR_SCREEN);
-    this.RECTANGULAR_SCREEN = this.context.resolution;
-
     keyboard.addEventListener("keydown", this.directionSnake);
   }
 
@@ -53,7 +49,6 @@ class _Snake2 extends React.Component {
     this.CheckApple();
     this.CheckColision();
     this.CheckCollapsed();
-    // console.log("check", this.state.RECTANGULAR_SCREEN);
   }
 
   componentWillUnmount() {
@@ -66,16 +61,16 @@ class _Snake2 extends React.Component {
     let response = window.confirm(
       "this action restarts the game from the beginning"
     );
-    if (response) {
+    if (this.state.score > 0 && response) {
       this.restartGame(e);
-    } else {
-    }
+    } else this.setState({ RECTANGULAR_SCREEN: e.target.value });
   };
 
   restartGame = e => {
     this.setState({ RECTANGULAR_SCREEN: e.target.value });
     this.setState({ snake: [[0, 0], [20, 0], [40, 0]] });
     this.setState({ direction: "RIGHT" });
+    this.setState({ score: 0 });
     this.initialHead_img = snakeRight;
   };
 
@@ -101,7 +96,6 @@ class _Snake2 extends React.Component {
       this.setState({ apple: this.newApple() });
       this.setState({ counterApple: this.state.counterApple + 1 });
       this.setState({ score: this.state.score + 20 });
-      // this.props.thisScore = this.state.counterApple;
     }
   }
 
@@ -146,12 +140,14 @@ class _Snake2 extends React.Component {
   CheckCollapsed() {
     let snakeCopy = [...this.state.snake];
     let headSnake = snakeCopy[snakeCopy.length - 1];
-    snakeCopy.pop();
 
     snakeCopy.forEach(element => {
+      console.log('element',element);
+      console.log('head',headSnake);
+      snakeCopy.pop();
       if (headSnake[0] == element[0] && headSnake[1] == element[1])
-        // this.GAMEOVER();
-        console.log("GAME OVER");
+        this.GAMEOVER();
+      // console.log("GAME OVER");
     });
   }
 
