@@ -6,6 +6,8 @@ import snakeUp from "../icon/snakeUp.png";
 import snakeDown from "../icon/snakeDown.png";
 import snakeTail from "../icon/tail.png";
 import apple from "../icon/apple.png";
+import btn_play from "../icon/play-ico.svg";
+import btn_pause_stop from "../icon/pause-stop.svg";
 import Level from "./Level";
 import Title from "./Title";
 import Score from "./Score";
@@ -17,16 +19,16 @@ const sizeUnit = 20;
 class _Snake2 extends React.Component {
   static contextType = SnakeContext;
 
-  initialHead_img = snakeRight;
-
   constructor(props) {
     super(props);
     console.log("StartGame", this.props.StartGame);
 
+    this.initialHead_img = snakeRight;
     this.state = {
       RECTANGULAR_SCREEN: 400,
-      btn_StartGame: null,
-      btn_StopGame: false,
+      btn_StartGame: false,
+      btn_StopGame: true,
+      toggleBtn: false,
       interval: null,
       GAME_OVER: false,
       direction: "RIGHT",
@@ -37,12 +39,11 @@ class _Snake2 extends React.Component {
     };
 
     this.directionSnake = this.directionSnake.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    // this.setState({ interval: setInterval(this.moveSnake, 100) });
-    /*     console.log(this.context);
-    console.log(this.state.RECTANGULAR_SCREEN); */
+    console.log(this.state.RECTANGULAR_SCREEN);
     this.RECTANGULAR_SCREEN = this.context.resolution;
 
     keyboard.addEventListener("keydown", this.directionSnake);
@@ -52,6 +53,7 @@ class _Snake2 extends React.Component {
     this.CheckApple();
     this.CheckColision();
     this.CheckCollapsed();
+    // console.log("check", this.state.RECTANGULAR_SCREEN);
   }
 
   componentWillUnmount() {
@@ -59,15 +61,23 @@ class _Snake2 extends React.Component {
     keyboard.removeEventListener("keydown", this.directionSnake);
   }
 
-  setResolution() {
-    this.setState({ RECTANGULAR_SCREEN: this.context.resolution });
-  }
+  handleChange = e => {
+    // this.setState({ [e.target.name]: e.target.value });
+    let response = window.confirm(
+      "this action restarts the game from the beginning"
+    );
+    if (response) {
+      this.restartGame(e);
+    } else {
+    }
+  };
 
-  initialState() {
-    this.setState({
-      snake: [[0, 0], [20, 0], [40, 0]]
-    });
-  }
+  restartGame = e => {
+    this.setState({ RECTANGULAR_SCREEN: e.target.value });
+    this.setState({ snake: [[0, 0], [20, 0], [40, 0]] });
+    this.setState({ direction: "RIGHT" });
+    this.initialHead_img = snakeRight;
+  };
 
   newApple() {
     let x = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
@@ -82,8 +92,8 @@ class _Snake2 extends React.Component {
     let headSnake = this.state.snake[this.state.snake.length - 1];
 
     if (
-      headSnake[0] === this.state.apple[0] &&
-      headSnake[1] === this.state.apple[1]
+      headSnake[0] == this.state.apple[0] &&
+      headSnake[1] == this.state.apple[1]
     ) {
       this.setState({
         snake: [...this.state.snake, [this.state.apple[0], this.state.apple[1]]]
@@ -100,7 +110,7 @@ class _Snake2 extends React.Component {
     let snakeCopy = [...this.state.snake];
     let headSnake = snakeCopy[snakeCopy.length - 1];
 
-    if (headSnake[0] === this.RECTANGULAR_SCREEN) {
+    if (headSnake[0] == RECTANGULAR_SCREEN) {
       snakeCopy.pop();
       headSnake = [0, headSnake[1]];
       snakeCopy.push(headSnake);
@@ -116,7 +126,7 @@ class _Snake2 extends React.Component {
       this.setState({ snake: snakeCopy });
     }
 
-    if (headSnake[1] === RECTANGULAR_SCREEN) {
+    if (headSnake[1] == RECTANGULAR_SCREEN) {
       snakeCopy.pop();
       headSnake = [headSnake[0], 0];
       snakeCopy.push(headSnake);
@@ -139,7 +149,7 @@ class _Snake2 extends React.Component {
     snakeCopy.pop();
 
     snakeCopy.forEach(element => {
-      if (headSnake[0] === element[0] && headSnake[1] === element[1])
+      if (headSnake[0] == element[0] && headSnake[1] == element[1])
         // this.GAMEOVER();
         console.log("GAME OVER");
     });
@@ -195,6 +205,11 @@ class _Snake2 extends React.Component {
       case "ArrowLeft":
         this.initialHead_img = snakeLeft;
         this.setState({ direction: "LEFT" });
+        break;
+      case " ":
+        console.log("space");
+        this.setState({ btn_StopGame: true });
+        break;
     }
   }
 
@@ -258,7 +273,10 @@ class _Snake2 extends React.Component {
       </div>
     );
   };
+
   render() {
+    const { RECTANGULAR_SCREEN } = this.state;
+    // this.setResolution(RECTANGULAR_SCREEN);
     return (
       <Wrapper style={{ position: "relative" }} sizeUnit={sizeUnit}>
         <div className="navbar">
@@ -266,44 +284,51 @@ class _Snake2 extends React.Component {
           <Title title={"Snake"} />
           <Score score={this.state.score} />
         </div>
-        <Board RECTANGULAR_SCREEN={this.context.resolution}>
+
+        <Board RECTANGULAR_SCREEN={RECTANGULAR_SCREEN}>
           {this.state.btn_StartGame ? this.Start_Game() : null}
         </Board>
 
         <div className="footer">
           <button
-            disabled={this.state.btn_StopGame}
+            className="btn_startGame"
+            disabled={this.state.toggleBtn}
             onClick={() => {
               this.setState({ btn_StartGame: true });
-              // this.setState({ btn_StopGame: false });
+              this.setState({ toggleBtn: !this.state.toggleBtn });
               this.setState({ interval: setInterval(this.moveSnake, 100) });
             }}
           >
-            START
+            <img width={"40px"} height={"40px"} src={btn_play} alt="btn_play" />
           </button>
 
           <button
-            disabled={!this.state.btn_StartGame}
+            className="btn_stopGame"
+            disabled={!this.state.toggleBtn}
             onClick={() => {
-              this.setState({ btn_StopGame: true });
-              // this.setState({ btn_StartGame: false });
+              this.setState({ btn_StopGame: false });
+              this.setState({ toggleBtn: !this.state.toggleBtn });
               this.setState({
                 interval: clearInterval(this.state.interval)
               });
             }}
           >
-            STOP
+            <img
+              width={"40px"}
+              height={"40px"}
+              src={btn_pause_stop}
+              alt="btn_pause_stop"
+            />
           </button>
 
           <div className="wrapper-resolution">
-            <span>Resolution</span>
+            {/* <span>Resolution</span> */}
             <select
-              // disabled={!this.state.btn_StartGame}
-              name="resolution"
               className="resolution"
-              onChange={e => {
-                this.setState({ RECTANGULAR_SCREEN: e.target.value });
-              }}
+              value={this.state.RECTANGULAR_SCREEN}
+              disabled={this.state.toggleBtn}
+              name="RECTANGULAR_SCREEN"
+              onChange={this.handleChange}
             >
               <option value={400}>400 x 400</option>
               <option value={600}>600 x 600</option>
@@ -351,7 +376,7 @@ const Wrapper = styled.div`
   .wrapper-resolution {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     width: auto;
     // background: salmon;
@@ -377,9 +402,12 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
-    width: auto;
-    height: 50px;
+    height: 40px;
+    width: 40px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: transparent;
   }
 `;
 
