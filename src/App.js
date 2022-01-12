@@ -5,14 +5,11 @@ import { useState } from "react";
 //import Style
 import styled from "styled-components";
 import "./App.css";
-import { SnakeContext } from "./Components/Context/SnakeContext";
 
 function App() {
-  const { resolution, setResolution } = useContext(SnakeContext);
-
   return (
-    <Wrapper resolution={resolution}>
-      <Snake resolution={resolution} />
+    <Wrapper>
+      <Snake />
     </Wrapper>
   );
 }
