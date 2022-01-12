@@ -265,7 +265,6 @@ class _Snake2 extends React.Component {
   };
 
   Start_Game = () => {
-    // this.setState({ RECTANGULAR_SCREEN: this.context });
     return (
       <div>
         {this.returnSnake()}
