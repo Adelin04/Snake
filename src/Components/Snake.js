@@ -94,14 +94,15 @@ class _Snake2 extends React.Component {
   }
 
   CheckApple() {
-    let headSnake = this.state.snake[this.state.snake.length - 1];
-
+    let snakeCopy = [...this.state.snake];
+    let headSnake = snakeCopy[snakeCopy.length - 1];
+    
     if (
       // eslint-disable-next-line eqeqeq
       headSnake[0] == this.state.apple[0] &&
       // eslint-disable-next-line eqeqeq
       headSnake[1] == this.state.apple[1]
-    ) {
+      ) {
       this.setState({
         snake: [...this.state.snake, [this.state.apple[0], this.state.apple[1]]]
       });
@@ -173,6 +174,8 @@ class _Snake2 extends React.Component {
     } */
 
     for (let i = snakeCopy.length - 1; i > 1; i--) {
+      console.log(snakeCopy);
+      console.log(headSnake[0]);
       if (
         headSnake[0] === snakeCopy[i - 2][0] &&
         headSnake[1] === snakeCopy[i - 2][1]
@@ -327,7 +330,7 @@ class _Snake2 extends React.Component {
                     this.setState({ btn_StartGame: true });
                     this.setState({ toggleBtn: !this.state.toggleBtn });
                     this.setState({
-                      interval: setInterval(this.moveSnake, 1000)
+                      interval: setInterval(this.moveSnake, 100)
                     });
                   }}
                 >
