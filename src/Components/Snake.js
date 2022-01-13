@@ -30,7 +30,7 @@ class _Snake2 extends React.Component {
       GAME_OVER: false,
       direction: "RIGHT",
       score: 0,
-      snake: [[0, 0], [20, 0], [40, 0]],
+      snake: [[0, 0] /* , [20, 0], [40, 0] */],
       apple: this.newApple(),
       counterApple: 0
     };
@@ -48,7 +48,6 @@ class _Snake2 extends React.Component {
     this.CheckApple();
     this.CheckColision();
     this.CheckCollapsed();
-    // console.log(this.state.GAME_OVER);
   }
 
   componentWillUnmount() {
@@ -61,17 +60,27 @@ class _Snake2 extends React.Component {
     let response = window.confirm(
       "this action restarts the game from the beginning"
     );
-    if (this.state.score > 0 && response) {
+    if (response) {
       this.restartGame(e);
     } else this.setState({ RECTANGULAR_SCREEN: e.target.value });
     localStorage.setItem("size", e.target.value);
   };
 
   restartGame = e => {
-    this.setState({ RECTANGULAR_SCREEN: e.target.value });
-    this.setState({ snake: [[0, 0], [20, 0], [40, 0]] });
-    this.setState({ direction: "RIGHT" });
-    this.setState({ score: 0 });
+    this.setState({
+      RECTANGULAR_SCREEN: e.target.value || localStorage.getItem("size") || 400,
+      btn_StartGame: false,
+      btn_StopGame: true,
+      toggleBtn: false,
+      interval: null,
+      GAME_OVER: false,
+      direction: "RIGHT",
+      score: 0,
+      snake: [[0, 0] /* , [20, 0], [40, 0] */],
+      apple: this.newApple(),
+      counterApple: 0
+    });
+
     this.initialHead_img = snakeRight;
   };
 
@@ -79,7 +88,7 @@ class _Snake2 extends React.Component {
     let x = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
     let y = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
 
-    if (x === 0 || y === 0) this.newApple();
+    if (x === 0 && y === 0) this.newApple();
 
     return [x, y];
   }
@@ -112,7 +121,6 @@ class _Snake2 extends React.Component {
       snakeCopy.pop();
       headSnake = [0, headSnake[1]];
       snakeCopy.push(headSnake);
-      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
 
@@ -120,7 +128,6 @@ class _Snake2 extends React.Component {
       snakeCopy.pop();
       headSnake = [RECTANGULAR_SCREEN - sizeUnit, headSnake[1]];
       snakeCopy.push(headSnake);
-      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
 
@@ -129,7 +136,6 @@ class _Snake2 extends React.Component {
       snakeCopy.pop();
       headSnake = [headSnake[0], 0];
       snakeCopy.push(headSnake);
-      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
 
@@ -137,21 +143,43 @@ class _Snake2 extends React.Component {
       snakeCopy.pop();
       headSnake = [headSnake[0], RECTANGULAR_SCREEN - sizeUnit];
       snakeCopy.push(headSnake);
-      // snakeCopy.shift();
       this.setState({ snake: snakeCopy });
     }
   }
 
   CheckCollapsed() {
     let snakeCopy = [...this.state.snake];
-    let headSnake = snakeCopy[snakeCopy.length - 1];
+    let headSnake = this.state.snake[snakeCopy.length - 1];
 
-    snakeCopy.forEach(element => {
-      snakeCopy.pop();
-      // eslint-disable-next-line eqeqeq
-      if (headSnake[0] == element[0] && headSnake[1] == element[1])
+    // snakeCopy.forEach(element => {
+    // console.log("element", element);
+    // snakeCopy.pop();
+    // eslint-disable-next-line eqeqeq
+    //   if (headSnake[0] == element[0] && headSnake[1] == element[1])
+    //     this.GAMEOVER();
+    // });
+
+    /*     let headX = headSnake[0];
+    let headY = headSnake[1];
+    for (let i = 2; i < snakeCopy.length; i++) {
+      let currentX = snakeCopy[i][0];
+      let currentY = snakeCopy[i][1];
+      console.log(snakeCopy);
+      console.log(snakeCopy[i][0]);
+      console.log(snakeCopy[i][1]);
+      if (headX === currentX && headY === currentY) {
         this.GAMEOVER();
-    });
+      }
+    } */
+
+    for (let i = snakeCopy.length - 1; i > 1; i--) {
+      if (
+        headSnake[0] === snakeCopy[i - 2][0] &&
+        headSnake[1] === snakeCopy[i - 2][1]
+      ) {
+        this.GAMEOVER();
+      }
+    }
   }
 
   moveSnake = () => {
@@ -264,6 +292,7 @@ class _Snake2 extends React.Component {
       <div>
         {this.returnSnake()}
         {this.returnApple()}
+        {this.state.GAME_OVER ? clearInterval(this.state.interval) : null}
       </div>
     );
   };
@@ -298,7 +327,7 @@ class _Snake2 extends React.Component {
                     this.setState({ btn_StartGame: true });
                     this.setState({ toggleBtn: !this.state.toggleBtn });
                     this.setState({
-                      interval: setInterval(this.moveSnake, 100)
+                      interval: setInterval(this.moveSnake, 1000)
                     });
                   }}
                 >
@@ -347,8 +376,10 @@ class _Snake2 extends React.Component {
             : <div className="wrapper-btn">
                 <button
                   className="btn_restartGame"
-                  onClick={() => {
+                  onClick={e => {
                     this.setState({ GAME_OVER: false });
+                    this.restartGame(e);
+                    console.log("this.state", this.state);
                   }}
                 >
                   <img
