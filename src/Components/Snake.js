@@ -5,6 +5,7 @@ import snakeLeft from "../icon/snakeLeft.png";
 import snakeUp from "../icon/snakeUp.png";
 import snakeDown from "../icon/snakeDown.png";
 import snakeTail from "../icon/tail.png";
+import snakeTailVertical from "../icon/tailVertical.png";
 import apple from "../icon/apple.png";
 import btn_play from "../icon/play-ico.svg";
 import btn_pause_stop from "../icon/pause-stop-ico.svg";
@@ -21,6 +22,7 @@ class _Snake2 extends React.Component {
     super(props);
 
     this.initialHead_img = snakeRight;
+    this.initialTail_img = snakeTail;
     this.state = {
       RECTANGULAR_SCREEN: localStorage.getItem("size") || 400,
       btn_StartGame: false,
@@ -29,6 +31,7 @@ class _Snake2 extends React.Component {
       interval: null,
       GAME_OVER: false,
       direction: "RIGHT",
+      locationChangeDirection: [],
       score: 0,
       snake: [[0, 0] /* , [20, 0], [40, 0] */],
       apple: this.newApple(),
@@ -47,7 +50,6 @@ class _Snake2 extends React.Component {
   componentDidUpdate() {
     this.CheckApple();
     this.CheckColision();
-    this.CheckCollapsed();
   }
 
   componentWillUnmount() {
@@ -66,24 +68,6 @@ class _Snake2 extends React.Component {
     localStorage.setItem("size", e.target.value);
   };
 
-  restartGame = e => {
-    this.setState({
-      RECTANGULAR_SCREEN: e.target.value || localStorage.getItem("size") || 400,
-      btn_StartGame: false,
-      btn_StopGame: true,
-      toggleBtn: false,
-      interval: null,
-      GAME_OVER: false,
-      direction: "RIGHT",
-      score: 0,
-      snake: [[0, 0] /* , [20, 0], [40, 0] */],
-      apple: this.newApple(),
-      counterApple: 0
-    });
-
-    this.initialHead_img = snakeRight;
-  };
-
   newApple() {
     let x = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
     let y = (Math.floor(Math.random() * sizeUnit - 1) + 1) * sizeUnit;
@@ -93,20 +77,88 @@ class _Snake2 extends React.Component {
     return [x, y];
   }
 
-  CheckApple() {
-    let snakeCopy = [...this.state.snake];
-    let headSnake = snakeCopy[snakeCopy.length - 1];
-    
-    if (
-      // eslint-disable-next-line eqeqeq
-      headSnake[0] == this.state.apple[0] &&
-      // eslint-disable-next-line eqeqeq
-      headSnake[1] == this.state.apple[1]
+  moveSnake = () => {
+    let snakeCopy = this.state.snake;
+    let headSnake = this.state.snake[snakeCopy.length - 1];
+
+    // eslint-disable-next-line default-case
+    switch (this.state.direction) {
+      case "RIGHT":
+        headSnake = [headSnake[0] + sizeUnit, headSnake[1]];
+        break;
+      case "LEFT":
+        headSnake = [headSnake[0] - sizeUnit, headSnake[1]];
+        break;
+      case "DOWN":
+        headSnake = [headSnake[0], headSnake[1] + sizeUnit];
+        break;
+      case "UP":
+        headSnake = [headSnake[0], headSnake[1] - sizeUnit];
+        break;
+    }
+
+    for (let i = 1; i < snakeCopy.length; i++) {
+      if (
+        headSnake[0] === snakeCopy[i - 1][0] &&
+        headSnake[1] === snakeCopy[i - 1][1]
       ) {
-      this.setState({
-        snake: [...this.state.snake, [this.state.apple[0], this.state.apple[1]]]
-      });
+        this.GAMEOVER();
+      }
+    }
+
+    snakeCopy.push(headSnake);
+    snakeCopy.shift();
+    this.setState({ snake: snakeCopy });
+  };
+
+  directionSnake({ key }) {
+    let snakeCopy = this.state.snake;
+    let headSnake = this.state.snake[snakeCopy.length - 1];
+    this.setState({ locationChangeDirection: headSnake });
+
+    // eslint-disable-next-line default-case
+    switch (key) {
+      case "ArrowDown":
+        this.initialHead_img = snakeDown;
+        // this.initialTail_img = snakeTail;
+        this.setState({ direction: "DOWN" });
+
+        break;
+      case "ArrowUp":
+        this.initialHead_img = snakeUp;
+        // this.initialTail_img = snakeTail;
+        this.setState({ direction: "UP" });
+
+        break;
+      case "ArrowRight":
+        this.initialHead_img = snakeRight;
+        // this.initialTail_img = snakeTail;
+        this.setState({ direction: "RIGHT" });
+
+        break;
+      case "ArrowLeft":
+        this.initialHead_img = snakeLeft;
+        // this.initialTail_img = snakeTail;
+        this.setState({ direction: "LEFT" });
+        break;
+      case " ":
+        console.log("space");
+        this.setState({ btn_StopGame: true });
+        break;
+    }
+  }
+
+  CheckApple() {
+    let newSnake = [...this.state.snake];
+    let headSnake = newSnake[newSnake.length - 1];
+    if (
+      headSnake[0] === this.state.apple[0] &&
+      headSnake[1] === this.state.apple[1]
+    ) {
+      newSnake.unshift([]);
+      this.setState({ snake: newSnake });
       this.setState({ apple: this.newApple() });
+
       this.setState({ counterApple: this.state.counterApple + 1 });
       this.setState({ score: this.state.score + 20 });
     }
@@ -148,99 +200,44 @@ class _Snake2 extends React.Component {
     }
   }
 
-  CheckCollapsed() {
-    let snakeCopy = [...this.state.snake];
-    let headSnake = this.state.snake[snakeCopy.length - 1];
-
-    // snakeCopy.forEach(element => {
-    // console.log("element", element);
-    // snakeCopy.pop();
-    // eslint-disable-next-line eqeqeq
-    //   if (headSnake[0] == element[0] && headSnake[1] == element[1])
-    //     this.GAMEOVER();
-    // });
-
-    /*     let headX = headSnake[0];
-    let headY = headSnake[1];
-    for (let i = 2; i < snakeCopy.length; i++) {
-      let currentX = snakeCopy[i][0];
-      let currentY = snakeCopy[i][1];
-      console.log(snakeCopy);
-      console.log(snakeCopy[i][0]);
-      console.log(snakeCopy[i][1]);
-      if (headX === currentX && headY === currentY) {
-        this.GAMEOVER();
-      }
-    } */
-
-    for (let i = snakeCopy.length - 1; i > 1; i--) {
-      console.log(snakeCopy);
-      console.log(headSnake[0]);
-      if (
-        headSnake[0] === snakeCopy[i - 2][0] &&
-        headSnake[1] === snakeCopy[i - 2][1]
-      ) {
-        this.GAMEOVER();
-      }
-    }
-  }
-
-  moveSnake = () => {
-    let snakeCopy = this.state.snake;
-    let headSnake = this.state.snake[snakeCopy.length - 1];
-
-    // eslint-disable-next-line default-case
-    switch (this.state.direction) {
-      case "RIGHT":
-        headSnake = [headSnake[0] + sizeUnit, headSnake[1]];
-        break;
-      case "LEFT":
-        headSnake = [headSnake[0] - sizeUnit, headSnake[1]];
-        break;
-      case "DOWN":
-        headSnake = [headSnake[0], headSnake[1] + sizeUnit];
-        break;
-      case "UP":
-        headSnake = [headSnake[0], headSnake[1] - sizeUnit];
-        break;
-    }
-
-    snakeCopy.push(headSnake);
-    snakeCopy.shift();
-    this.setState({ snake: snakeCopy });
+  Start_Game = () => {
+    return (
+      <div>
+        {this.state.GAME_OVER ? clearInterval(this.state.interval) : null}
+        {this.returnSnake()}
+        {this.returnApple()}
+      </div>
+    );
   };
 
-  directionSnake({ key }) {
-    // eslint-disable-next-line default-case
-    switch (key) {
-      case "ArrowDown":
-        this.initialHead_img = snakeDown;
-        this.setState({ direction: "DOWN" });
+  GAMEOVER = () => {
+    this.state.GAME_OVER = true;
+    return <div className="game-over">Game Over</div>;
+  };
 
-        break;
-      case "ArrowUp":
-        this.initialHead_img = snakeUp;
-        this.setState({ direction: "UP" });
+  restartGame = e => {
+    this.setState({
+      RECTANGULAR_SCREEN: e.target.value || localStorage.getItem("size") || 400,
+      btn_StartGame: false,
+      btn_StopGame: true,
+      toggleBtn: false,
+      interval: null,
+      GAME_OVER: false,
+      direction: "RIGHT",
+      score: 0,
+      snake: [[0, 0] /* , [20, 0], [40, 0] */],
+      apple: this.newApple(),
+      counterApple: 0
+    });
 
-        break;
-      case "ArrowRight":
-        this.initialHead_img = snakeRight;
-        this.setState({ direction: "RIGHT" });
-
-        break;
-      case "ArrowLeft":
-        this.initialHead_img = snakeLeft;
-        this.setState({ direction: "LEFT" });
-        break;
-      case " ":
-        console.log("space");
-        this.setState({ btn_StopGame: true });
-        break;
-    }
-  }
+    this.initialHead_img = snakeRight;
+    this.initialTail_img = snakeTail;
+  };
 
   returnSnake = () => {
     let headSnake = this.state.snake[this.state.snake.length - 1];
+    let snakeCopy = [...this.state.snake];
+
     return this.state.snake.map((segment, index) => {
       if (headSnake === segment) {
         return (
@@ -266,7 +263,7 @@ class _Snake2 extends React.Component {
               left: `${segment[0]}px`,
               top: `${segment[1]}px`
             }}
-            src={snakeTail}
+            src={this.initialTail_img}
             alt="snake"
           />
         );
@@ -290,24 +287,9 @@ class _Snake2 extends React.Component {
     );
   };
 
-  Start_Game = () => {
-    return (
-      <div>
-        {this.returnSnake()}
-        {this.returnApple()}
-        {this.state.GAME_OVER ? clearInterval(this.state.interval) : null}
-      </div>
-    );
-  };
-
-  GAMEOVER = () => {
-    this.state.GAME_OVER = true;
-    return <div className="game-over">Game Over</div>;
-  };
-
   render() {
     const { RECTANGULAR_SCREEN } = this.state;
-    // this.setResolution(RECTANGULAR_SCREEN);
+
     return (
       <Wrapper style={{ position: "relative" }} sizeUnit={sizeUnit}>
         <div className="navbar">
@@ -382,7 +364,6 @@ class _Snake2 extends React.Component {
                   onClick={e => {
                     this.setState({ GAME_OVER: false });
                     this.restartGame(e);
-                    console.log("this.state", this.state);
                   }}
                 >
                   <img
