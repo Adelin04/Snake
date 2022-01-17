@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
 import Snake from "./Components/Snake";
-import { useState } from "react";
 
 //import Style
 import styled from "styled-components";
@@ -23,11 +22,4 @@ const Wrapper = styled.section`
   align-items: center;
   width: 100%;
   height: 100%;
-
-  .footer {
-    display: flex;
-    justify-content: space-around;
-    margin: 25px auto;
-    width: ${({ resolution }) => resolution}px;
-  }
 `;

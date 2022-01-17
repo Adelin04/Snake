@@ -5,11 +5,13 @@ import snakeLeft from "../icon/snakeLeft.png";
 import snakeUp from "../icon/snakeUp.png";
 import snakeDown from "../icon/snakeDown.png";
 import snakeTail from "../icon/tail.png";
-import snakeTailVertical from "../icon/tailVertical.png";
 import apple from "../icon/apple.png";
 import btn_play from "../icon/play-ico.svg";
 import btn_pause_stop from "../icon/pause-stop-ico.svg";
 import btn_restart from "../icon/restart-ico.svg";
+import directionIco from "../icon/direction-ico.png";
+import enterIco from "../icon/enter-ico.png";
+import spaceIco from "../icon/space-ico.png";
 import Level from "./Level";
 import Title from "./Title";
 import Score from "./Score";
@@ -22,20 +24,20 @@ class _Snake2 extends React.Component {
     super(props);
 
     this.initialHead_img = snakeRight;
-    this.initialTail_img = snakeTail;
     this.state = {
       RECTANGULAR_SCREEN: localStorage.getItem("size") || 400,
       btn_StartGame: false,
       btn_StopGame: true,
-      toggleBtn: false,
+      disabledBtn: false,
       interval: null,
       GAME_OVER: false,
       direction: "RIGHT",
+      speed: 100,
       locationChangeDirection: [],
       score: 0,
       snake: [[0, 0] /* , [20, 0], [40, 0] */],
       apple: this.newApple(),
-      counterApple: 0
+      counterApple: 0,
     };
 
     this.directionSnake = this.directionSnake.bind(this);
@@ -57,10 +59,10 @@ class _Snake2 extends React.Component {
     keyboard.removeEventListener("keydown", this.directionSnake);
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     // this.setState({ [e.target.name]: e.target.value });
     let response = window.confirm(
-      "this action restarts the game from the beginning"
+      "This action will restart the game"
     );
     if (response) {
       this.restartGame(e);
@@ -120,30 +122,38 @@ class _Snake2 extends React.Component {
     switch (key) {
       case "ArrowDown":
         this.initialHead_img = snakeDown;
-        // this.initialTail_img = snakeTail;
         this.setState({ direction: "DOWN" });
-
         break;
       case "ArrowUp":
         this.initialHead_img = snakeUp;
-        // this.initialTail_img = snakeTail;
         this.setState({ direction: "UP" });
-
         break;
       case "ArrowRight":
         this.initialHead_img = snakeRight;
-        // this.initialTail_img = snakeTail;
         this.setState({ direction: "RIGHT" });
-
         break;
       case "ArrowLeft":
         this.initialHead_img = snakeLeft;
-        // this.initialTail_img = snakeTail;
         this.setState({ direction: "LEFT" });
         break;
       case " ":
-        console.log("space");
-        this.setState({ btn_StopGame: true });
+        this.setState({ btn_StopGame: false });
+        this.setState({ disabledBtn: false });
+        this.setState({
+          interval: clearInterval(this.state.interval),
+        });
+        break;
+      case "Enter":
+        this.copySpeed = this.state.speed;
+        this.setState({
+          interval: clearInterval(this.state.interval),
+        });
+        this.setState({ speed: this.copySpeed });
+        this.setState({
+          interval: setInterval(this.moveSnake, this.state.speed),
+        });
+        this.setState({ btn_StartGame: true });
+        this.setState({ disabledBtn: true });
         break;
     }
   }
@@ -215,7 +225,7 @@ class _Snake2 extends React.Component {
     return <div className="game-over">Game Over</div>;
   };
 
-  restartGame = e => {
+  restartGame = (e) => {
     this.setState({
       RECTANGULAR_SCREEN: e.target.value || localStorage.getItem("size") || 400,
       btn_StartGame: false,
@@ -227,7 +237,7 @@ class _Snake2 extends React.Component {
       score: 0,
       snake: [[0, 0] /* , [20, 0], [40, 0] */],
       apple: this.newApple(),
-      counterApple: 0
+      counterApple: 0,
     });
 
     this.initialHead_img = snakeRight;
@@ -247,7 +257,7 @@ class _Snake2 extends React.Component {
             style={{
               position: "absolute",
               left: `${segment[0]}px`,
-              top: `${segment[1]}px`
+              top: `${segment[1]}px`,
             }}
             src={this.initialHead_img}
             alt="snake"
@@ -261,9 +271,9 @@ class _Snake2 extends React.Component {
             style={{
               position: "absolute",
               left: `${segment[0]}px`,
-              top: `${segment[1]}px`
+              top: `${segment[1]}px`,
             }}
-            src={this.initialTail_img}
+            src={snakeTail}
             alt="snake"
           />
         );
@@ -277,7 +287,7 @@ class _Snake2 extends React.Component {
         style={{
           position: "absolute",
           left: `${this.state.apple[0]}px`,
-          top: `${this.state.apple[1]}px`
+          top: `${this.state.apple[1]}px`,
         }}
         width={sizeUnit}
         height={sizeUnit}
@@ -292,88 +302,120 @@ class _Snake2 extends React.Component {
 
     return (
       <Wrapper style={{ position: "relative" }} sizeUnit={sizeUnit}>
-        <div className="navbar">
+        {/* <div className="navbar"> */}
+        <NavBar RECTANGULAR_SCREEN={RECTANGULAR_SCREEN}>
           <Level level={1} />
           <Title title={"Snake"} />
           <Score score={this.state.score} />
+        </NavBar>
+        {/* </div> */}
+
+        <div className="wrapper-board">
+          <Board RECTANGULAR_SCREEN={RECTANGULAR_SCREEN}>
+            {this.state.GAME_OVER ? this.GAMEOVER() : null}
+            {this.state.btn_StartGame ? this.Start_Game() : null}
+          </Board>
+
+          <div className="keys">
+            <img width={"100px"} src={directionIco} alt="direction-ico" />
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                padding: "5px",
+                margin: "10px 0px",
+                width: "auto",
+              }}
+            >
+              <img
+                style={{ width: "40px", margin: "5px" }}
+                src={spaceIco}
+                alt="space-ico"
+              />
+              <img
+                style={{ width: "40px", margin: "5px" }}
+                src={enterIco}
+                alt="enter-ico"
+              />
+            </div>
+          </div>
         </div>
-        <Board RECTANGULAR_SCREEN={RECTANGULAR_SCREEN}>
-          {this.state.GAME_OVER ? this.GAMEOVER() : null}
-          {this.state.btn_StartGame ? this.Start_Game() : null}
-        </Board>
 
         <Footer RECTANGULAR_SCREEN={RECTANGULAR_SCREEN}>
-          {!this.state.GAME_OVER
-            ? <div className="wrapper-btn">
-                <button
-                  className="btn_startGame"
-                  disabled={this.state.toggleBtn}
-                  onClick={() => {
-                    this.setState({ btn_StartGame: true });
-                    this.setState({ toggleBtn: !this.state.toggleBtn });
-                    this.setState({
-                      interval: setInterval(this.moveSnake, 100)
-                    });
-                  }}
-                >
-                  <img
-                    width={"40px"}
-                    height={"40px"}
-                    src={btn_play}
-                    alt="btn_play"
-                  />
-                </button>
+          {!this.state.GAME_OVER ? (
+            <div className="wrapper-btn">
+              <button
+                className="btn_startGame"
+                disabled={this.state.disabledBtn}
+                onClick={() => {
+                  this.setState({ btn_StartGame: true });
+                  this.setState({ disabledBtn: !this.state.disabledBtn });
+                  this.setState({
+                    interval: setInterval(this.moveSnake, 100),
+                  });
+                }}
+              >
+                <img
+                  width={"40px"}
+                  height={"40px"}
+                  src={btn_play}
+                  alt="btn_play"
+                />
+              </button>
 
-                <button
-                  className="btn_stopGame"
-                  disabled={!this.state.toggleBtn}
-                  onClick={() => {
-                    this.setState({ btn_StopGame: false });
-                    this.setState({ toggleBtn: !this.state.toggleBtn });
-                    this.setState({
-                      interval: clearInterval(this.state.interval)
-                    });
-                  }}
-                >
-                  <img
-                    width={"40px"}
-                    height={"40px"}
-                    src={btn_pause_stop}
-                    alt="btn_pause_stop"
-                  />
-                </button>
+              <button
+                className="btn_stopGame"
+                disabled={!this.state.disabledBtn}
+                onClick={(e) => {
+                  this.setState({ btn_StopGame: false });
+                  this.setState({ disabledBtn: !this.state.disabledBtn });
+                  this.setState({
+                    interval: clearInterval(this.state.interval),
+                  });
+                }}
+              >
+                <img
+                  width={"40px"}
+                  height={"40px"}
+                  src={btn_pause_stop}
+                  alt="btn_pause_stop"
+                />
+              </button>
 
-                <div className="wrapper-resolution">
-                  {/* <span>Resolution</span> */}
-                  <select
-                    className="resolution"
-                    value={this.state.RECTANGULAR_SCREEN}
-                    disabled={this.state.toggleBtn}
-                    name="RECTANGULAR_SCREEN"
-                    onChange={this.handleChange}
-                  >
-                    <option value={400}>400 x 400</option>
-                    <option value={600}>600 x 600</option>
-                    <option value={800}>800 x 800</option>
-                  </select>
-                </div>
+              <div className="wrapper-resolution">
+                {/* <span>Resolution</span> */}
+                <select
+                  className="resolution"
+                  value={this.state.RECTANGULAR_SCREEN}
+                  disabled={this.state.disabledBtn}
+                  name="RECTANGULAR_SCREEN"
+                  onChange={this.handleChange}
+                >
+                  <option value={400}>400 x 400</option>
+                  <option value={600}>600 x 600</option>
+                  <option value={800}>800 x 800</option>
+                </select>
               </div>
-            : <div className="wrapper-btn">
-                <button
-                  className="btn_restartGame"
-                  onClick={e => {
-                    this.setState({ GAME_OVER: false });
-                    this.restartGame(e);
-                  }}
-                >
-                  <img
-                    width={"40px"}
-                    height={"40px"}
-                    src={btn_restart}
-                    alt="btn_restart"
-                  />
-                </button>
-              </div>}
+            </div>
+          ) : (
+            <div className="wrapper-btn">
+              <button
+                className="btn_restartGame"
+                onClick={(e) => {
+                  this.setState({ GAME_OVER: false });
+                  this.restartGame(e);
+                }}
+              >
+                <img
+                  width={"40px"}
+                  height={"40px"}
+                  src={btn_restart}
+                  alt="btn_restart"
+                />
+              </button>
+            </div>
+          )}
         </Footer>
       </Wrapper>
     );
@@ -408,6 +450,32 @@ const Wrapper = styled.div`
     font-weight: bolder;
     font-size: 50px;
     color: red;
+  }
+
+  .wrapper-board {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    // background: aqua;
+  }
+
+  .keys {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: auto;
+    margin: auto;
+    // background: black;
+  }
+
+  .wrapper-left-down-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -459,6 +527,7 @@ const Footer = styled.div`
     background: transparent;
   }
 `;
+const NavBar = Footer;
 
 const Board = styled.div`
   display: flex;
@@ -468,7 +537,7 @@ const Board = styled.div`
   position: relative;
   width: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
   height: ${({ RECTANGULAR_SCREEN }) => RECTANGULAR_SCREEN}px;
-  box-shadow: 20px 0px 50px 2px rgba(0, 0, 0, 0.363);
+  box-shadow: 5px 0px 50px 10px rgba(0, 0, 0, 0.363);
   // background: black;
   background: rgba(22, 51, 63, 0.89);
 `;
