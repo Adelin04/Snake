@@ -437,7 +437,7 @@ const Wrapper = styled.div`
   .apple {
     z-index: 0;
   }
-
+  
   .navbar {
     display: flex;
     justify-content: space-around;
@@ -445,11 +445,12 @@ const Wrapper = styled.div`
     min-width: 400px;
     height: auto;
   }
-
+  
   .game-over {
     font-weight: bolder;
     font-size: 50px;
     color: red;
+    z-index: 1;
   }
 
   .wrapper-board {
